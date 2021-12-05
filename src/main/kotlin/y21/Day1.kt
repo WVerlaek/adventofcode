@@ -5,8 +5,6 @@ import common.Day
 fun main() = Day1(2)
 
 object Day1 : Day(2021, 1) {
-    private val numbers = lines.map { it.toInt() }
-
     init {
         useSampleInput {
             """
@@ -23,6 +21,7 @@ object Day1 : Day(2021, 1) {
             """.trimIndent()
         }
     }
+    private val numbers = lines.map { it.toInt() }
 
     override fun level1(): String {
         return numbers.numIncreases().toString()
