@@ -9,7 +9,7 @@ abstract class Day(val year: Int, val day: Int) {
     val lines: List<String>
         get() = input.lines()
 
-    private var dryRun = false
+    var dryRun = false
 
     fun useSampleInput(s: () -> String) {
         input = s()
