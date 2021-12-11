@@ -1,15 +1,16 @@
 package y21
 
 import common.Day
+import common.util.splitToInts
 import kotlin.math.abs
 
 fun main() = Day7(2)
 
 object Day7 : Day(2021, 7) {
     init {
-//        useSampleInput { "16,1,2,0,4,2,7,1,2,14" }
+        useSampleInput { "16,1,2,0,4,2,7,1,2,14" }
     }
-    val crabs = lines[0].split(",").map { it.toInt() }
+    val crabs = lines[0].splitToInts()
 
     override fun level1(): String {
         val max = crabs.maxOrNull() ?: 0

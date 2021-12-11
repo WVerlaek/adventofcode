@@ -1,6 +1,7 @@
 package y21
 
 import common.Day
+import common.util.splitToInts
 
 fun main() = Day6(2)
 
@@ -10,7 +11,7 @@ object Day6 : Day(2021, 6) {
         dryRun = true
     }
 
-    val fish = lines[0].split(",").map { it.toInt() }
+    val fish = lines[0].splitToInts()
 
     override fun level1(): String {
         var generation = fish

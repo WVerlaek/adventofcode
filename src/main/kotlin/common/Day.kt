@@ -4,7 +4,11 @@ import common.input.loadInput
 import common.input.submitAnswer
 
 abstract class Day(val year: Int, val day: Int) {
-    var input = loadInput(year, day).trimEnd() // Remove empty last line.
+    private val realInput by lazy { loadInput(year, day).trimEnd() } // Remove empty last line.
+    private var sampleInput: String? = null
+
+    val input: String
+        get() = sampleInput ?: realInput
 
     val lines: List<String>
         get() = input.lines()
@@ -12,7 +16,7 @@ abstract class Day(val year: Int, val day: Int) {
     var dryRun = false
 
     fun useSampleInput(s: () -> String) {
-        input = s()
+        sampleInput = s()
         dryRun = true
     }
 

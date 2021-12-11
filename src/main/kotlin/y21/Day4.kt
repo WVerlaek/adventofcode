@@ -1,6 +1,7 @@
 package y21
 
 import common.Day
+import common.util.splitToInts
 
 fun main() = Day4(2)
 
@@ -52,7 +53,7 @@ object Day4 : Day(2021, 4) {
         }
     }
 
-    val draw = lines[0].split(",").map { it.toInt() }
+    val draw = lines[0].splitToInts()
 
     val nBoards = lines.size / 6
     val boards = (0 until nBoards).map { i ->

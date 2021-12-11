@@ -1,6 +1,7 @@
 package y21
 
 import common.Day
+import common.util.toInts
 
 fun main() = Day1(2)
 
@@ -21,7 +22,7 @@ object Day1 : Day(2021, 1) {
             """.trimIndent()
         }
     }
-    private val numbers = lines.map { it.toInt() }
+    private val numbers = lines.toInts()
 
     override fun level1(): String {
         return numbers.numIncreases().toString()

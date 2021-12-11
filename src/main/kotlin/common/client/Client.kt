@@ -11,7 +11,7 @@ import kotlin.io.path.Path
 private const val sessionIdFile = ".secrets/session"
 
 private fun loadSessionId(): String {
-    return Files.readString(Path(sessionIdFile))
+    return String(Files.readAllBytes(Path(sessionIdFile))).trim()
 }
 
 class Client(private val baseUrl: String = "https://adventofcode.com") {
