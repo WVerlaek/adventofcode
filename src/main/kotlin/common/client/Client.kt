@@ -9,6 +9,10 @@ import java.nio.file.Files
 import kotlin.io.path.Path
 
 private const val sessionIdFile = ".secrets/session"
+private const val rightAnswer = "That's the right answer!"
+private const val alreadyCompleted = "You don't seem to be solving the right level."
+private const val wrongAnswerTooLow = "too low"
+private const val wrongAnswerTooHigh = "too high"
 
 private fun loadSessionId(): String {
     return String(Files.readAllBytes(Path(sessionIdFile))).trim()
@@ -55,7 +59,15 @@ class Client(private val baseUrl: String = "https://adventofcode.com") {
             .build()
         val response = client.newCall(request).execute()
         val responseBody = response.body ?: throw RuntimeException("Failed to get input from $url, response code ${response.code}")
-        println("Uploaded answer (year $year, day $day, level $level). Response: ${responseBody.string()}")
+        val responseStr = responseBody.string()
+        val result = when {
+            rightAnswer in responseStr -> "right answer!"
+            alreadyCompleted in responseStr -> "not the right level, already completed?"
+            wrongAnswerTooLow in responseStr -> "wrong, answer is too low"
+            wrongAnswerTooHigh in responseStr -> "wrong, answer is too high"
+            else -> responseStr
+        }
+        println("Uploaded answer (year $year, day $day, level $level). Response: $result")
         responseBody.close()
     }
 }
