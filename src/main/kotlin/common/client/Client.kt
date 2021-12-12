@@ -67,7 +67,8 @@ class Client(private val baseUrl: String = "https://adventofcode.com") {
             wrongAnswerTooHigh in responseStr -> "wrong, answer is too high"
             else -> responseStr
         }
-        println("Uploaded answer (year $year, day $day, level $level). Response: $result")
+
+        println("Response: $result")
         responseBody.close()
     }
 }

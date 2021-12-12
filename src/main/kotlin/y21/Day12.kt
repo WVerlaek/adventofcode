@@ -5,9 +5,11 @@ package y21
 import com.google.common.graph.Graph
 import com.google.common.graph.GraphBuilder
 import com.google.common.graph.MutableGraph
-import common.Day
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
 
-fun main() = Day12(2)
+fun main() = solvePuzzle(2021, 12, 2) { Day12(it) }
 
 private typealias Path = List<Cave>
 
@@ -21,26 +23,11 @@ private data class Cave(val s: String) {
     }
 }
 
-object Day12 : Day(2021, 12) {
-    init {
-//        useSampleInput {
-//            """
-//                start-A
-//                start-b
-//                A-c
-//                A-b
-//                b-d
-//                A-end
-//                b-end
-//            """.trimIndent()
-//        }
-        dryRun = true
-    }
-
+class Day12(val input: Input) : Puzzle {
     private val graph: MutableGraph<Cave> = GraphBuilder.undirected().build()
 
     init {
-        lines.forEach { line ->
+        input.lines.forEach { line ->
             val (a, b) = line.split("-")
             val (na, nb) = Cave(a) to Cave(b)
             graph.addNode(na)
@@ -49,11 +36,10 @@ object Day12 : Day(2021, 12) {
         }
     }
 
-    override fun level1(): String {
+    override fun solveLevel1(): Any {
         return graph.pathsToEnd(Cave.start, listOf(Cave.start), mutableSetOf(Cave.start), true)
             .also { println(it.map { path -> path.joinToString(",", prefix = "[", postfix = "]") { cave -> cave.s } }) }
             .size
-            .toString()
     }
 
     private fun Graph<Cave>.pathsToEnd(from: Cave, pathInclFrom: Path, visitedSmallCaves: MutableSet<Cave>, visitedOneTwice: Boolean): List<Path> {
@@ -84,10 +70,9 @@ object Day12 : Day(2021, 12) {
         }
     }
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         return graph.pathsToEnd(Cave.start, listOf(Cave.start), mutableSetOf(Cave.start), false)
             .also { println(it.map { path -> path.joinToString(",", prefix = "[", postfix = "]") { cave -> cave.s } }) }
             .size
-            .toString()
     }
 }
