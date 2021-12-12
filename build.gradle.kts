@@ -17,6 +17,7 @@ dependencies {
     testImplementation(kotlin("test"))
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    implementation("com.google.guava:guava:31.0.1-jre")
 }
 
 tasks.test {

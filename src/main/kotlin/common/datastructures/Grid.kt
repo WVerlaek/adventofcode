@@ -1,4 +1,4 @@
-package common.models
+package common.datastructures
 
 data class Cell<T>(val row: Int, val col: Int, var value: T)
 

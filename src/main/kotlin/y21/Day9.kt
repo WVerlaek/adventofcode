@@ -1,8 +1,8 @@
 package y21
 
 import common.Day
-import common.models.Cell
-import common.models.Grid
+import common.datastructures.Cell
+import common.datastructures.Grid
 import java.util.*
 
 fun main() = Day9(2)

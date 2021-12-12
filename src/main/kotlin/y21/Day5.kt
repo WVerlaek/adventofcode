@@ -1,9 +1,9 @@
 package y21
 
 import common.Day
-import common.models.Grid
-import common.models.Line
-import common.models.Point
+import common.datastructures.Grid
+import common.datastructures.Line
+import common.datastructures.Point
 import common.util.toOrFrom
 
 fun main() = Day5(2)
