@@ -1,27 +1,16 @@
 package y21
 
-import common.Day
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
 
-fun main() = Day2(2)
+fun main() = solvePuzzle(2021, 2, 2) { Day2(it) }
 
-object Day2 : Day(2021, 2) {
-    init {
-        useSampleInput {
-            """
-                forward 5
-                down 5
-                forward 8
-                up 3
-                down 8
-                forward 2
-            """.trimIndent()
-        }
-    }
-
-    override fun level1(): String {
+class Day2(val input: Input) : Puzzle {
+    override fun solveLevel1(): Any {
         var horizontal = 0L
         var depth = 0L
-        lines.forEach { command ->
+        input.lines.forEach { command ->
             val amount = command.substringAfter(" ").toInt()
             when {
                 command.startsWith("forward") -> {
@@ -35,14 +24,14 @@ object Day2 : Day(2021, 2) {
                 }
             }
         }
-        return "${depth * horizontal}"
+        return depth * horizontal
     }
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         var aim = 0L
         var horizontal = 0L
         var depth = 0L
-        lines.forEach { command ->
+        input.lines.forEach { command ->
             val amount = command.substringAfter(" ").toInt()
             when {
                 command.startsWith("forward") -> {
@@ -57,6 +46,6 @@ object Day2 : Day(2021, 2) {
                 }
             }
         }
-        return "${depth * horizontal}"
+        return depth * horizontal
     }
 }

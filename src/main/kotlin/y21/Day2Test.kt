@@ -4,26 +4,25 @@ import common.puzzle.Input
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-internal class Day12Test {
+internal class Day2Test {
     private val sample = Input("""
-        start-A
-        start-b
-        A-c
-        A-b
-        b-d
-        A-end
-        b-end
+        forward 5
+        down 5
+        forward 8
+        up 3
+        down 8
+        forward 2
     """.trimIndent())
 
-    private val day = Day12(sample)
+    private val day = Day2(sample)
 
     @Test
     fun solveLevel1() {
-        assertEquals(10, day.solveLevel1())
+        assertEquals(150L, day.solveLevel1())
     }
 
     @Test
     fun solveLevel2() {
-        assertEquals(36, day.solveLevel2())
+        assertEquals(900L, day.solveLevel2())
     }
 }

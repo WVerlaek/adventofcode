@@ -9,7 +9,7 @@ interface Puzzle {
 
 fun solvePuzzle(year: Int, day: Int, level: Int, dryRun: Boolean = false, puzzle: (input: Input) -> Puzzle) {
     val client = Client()
-    val input = client.getInput(year, day)
+    val input = client.getInput(year, day).trimEnd() // Remove empty last line.
     val p = puzzle(Input(input))
     val answer = when (level) {
         1 -> p.solveLevel1()

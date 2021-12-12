@@ -1,26 +1,24 @@
 package y21
 
-import common.Day
-import common.util.splitToInts
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
 import kotlin.math.abs
 
-fun main() = Day7(2)
+fun main() = solvePuzzle(2021, 7, 2) { Day7(it) }
 
-object Day7 : Day(2021, 7) {
-    init {
-        useSampleInput { "16,1,2,0,4,2,7,1,2,14" }
-    }
-    val crabs = lines[0].splitToInts()
+class Day7(val input: Input) : Puzzle {
+    val crabs = input.splitToInts()
 
-    override fun level1(): String {
+    override fun solveLevel1(): Any {
         val max = crabs.maxOrNull() ?: 0
         val costs = IntArray(max + 1) { i ->
             crabs.sumOf { crab -> abs(crab - i) }
         }
-        return costs.minOrNull()?.toString() ?: ""
+        return costs.minOrNull() ?: ""
     }
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         val max = crabs.maxOrNull() ?: 0
 
         val costToMoveNSteps = IntArray(max + 1)
@@ -31,6 +29,6 @@ object Day7 : Day(2021, 7) {
         val costs = IntArray(max + 1) { i ->
             crabs.sumOf { crab -> costToMoveNSteps[abs(crab - i)] }
         }
-        return costs.minOrNull()?.toString() ?: ""
+        return costs.minOrNull() ?: ""
     }
 }

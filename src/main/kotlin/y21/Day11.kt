@@ -1,31 +1,16 @@
 package y21
 
-import common.Day
 import common.datastructures.Cell
 import common.datastructures.Grid
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
 import java.util.*
 
-fun main() = Day11(2)
+fun main() = solvePuzzle(2021, 11, 2) { Day11(it) }
 
-object Day11 : Day(2021, 11) {
-    init {
-//        useSampleInput {
-//            """
-//                5483143223
-//                2745854711
-//                5264556173
-//                6141336146
-//                6357385478
-//                4167524645
-//                2176841721
-//                6882881134
-//                4846848554
-//                5283751526
-//            """.trimIndent()
-//        }
-    }
-
-    val startingGrid = Grid(lines.size, lines[0].length) { r, c -> lines[r][c].digitToInt()}
+class Day11(val input: Input) : Puzzle {
+    val startingGrid = Grid(input.lines.size, input.lines[0].length) { r, c -> input.lines[r][c].digitToInt()}
 
     fun Grid<Int>.simulateStep(): Pair<Grid<Int>, Int> {
         val new = copy()
@@ -54,7 +39,7 @@ object Day11 : Day(2021, 11) {
         return new to flashes
     }
 
-    override fun level1(): String {
+    override fun solveLevel1(): Any {
         val steps = 100
         var grid = startingGrid
         var totalFlashes = 0L
@@ -63,16 +48,16 @@ object Day11 : Day(2021, 11) {
             grid = next
             totalFlashes += flashes
         }
-        return totalFlashes.toString()
+        return totalFlashes
     }
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         var grid = startingGrid
         var step = 1
         while (true) {
             val (next, flashes) = grid.simulateStep()
             if (flashes == 100) {
-                return step.toString()
+                return step
             }
             grid = next
             step++

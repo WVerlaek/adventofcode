@@ -1,44 +1,33 @@
 package y21
 
-import common.Day
 import common.datastructures.Cell
 import common.datastructures.Grid
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
 import java.util.*
 
-fun main() = Day9(2)
+fun main() = solvePuzzle(2021, 9, 2) { Day9(it) }
 
-object Day9 : Day(2021, 9) {
-    init {
-//        useSampleInput {
-//            """
-//                2199943210
-//                3987894921
-//                9856789892
-//                8767896789
-//                9899965678
-//            """.trimIndent()
-//        }
-    }
-
-    val map = Grid(lines.size, lines[0].length) { row, col ->
-        lines[row][col].digitToInt()
+class Day9(val input: Input) : Puzzle {
+    val map = Grid(input.lines.size, input.lines[0].length) { row, col ->
+        input.lines[row][col].digitToInt()
     }
 
     val lowPoints = map.cells().filter { cell ->
         map.neighbors(cell).all { neigh -> neigh.value > cell.value }
     }
 
-    override fun level1(): String {
-        return lowPoints.sumOf { cell -> cell.value + 1 }.toString()
+    override fun solveLevel1(): Any {
+        return lowPoints.sumOf { cell -> cell.value + 1 }
     }
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         return lowPoints.map { p -> basinSize(p) }
             .sortedDescending()
             .also { println(it) }
             .take(3)
             .fold(1L) { acc, value -> acc * value }
-            .toString()
     }
 
     private fun basinSize(lowPoint: Cell<Int>): Long {

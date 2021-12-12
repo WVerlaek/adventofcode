@@ -1,37 +1,22 @@
 package y21
 
-import common.Day
-import common.util.toInts
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
 
-fun main() = Day1(2)
+fun main() = solvePuzzle(2021, 1, 2) { Day1(it) }
 
-object Day1 : Day(2021, 1) {
-    init {
-        useSampleInput {
-            """
-                199
-                200
-                208
-                210
-                200
-                207
-                240
-                269
-                260
-                263
-            """.trimIndent()
-        }
-    }
-    private val numbers = lines.toInts()
+class Day1(val input: Input) : Puzzle {
+    private val numbers = input.linesToInts()
 
-    override fun level1(): String {
-        return numbers.numIncreases().toString()
+    override fun solveLevel1(): Any {
+        return numbers.numIncreases()
     }
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         val numWindows = numbers.size - 2
         val windows = (0 until numWindows).map { i -> numbers.subList(i, i+3).sum() }
-        return windows.numIncreases().toString()
+        return windows.numIncreases()
     }
 }
 

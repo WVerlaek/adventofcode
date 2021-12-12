@@ -1,36 +1,13 @@
 package y21
 
-import common.Day
-import common.util.splitToInts
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
+import common.puzzle.splitToInts
 
-fun main() = Day4(2)
+fun main() = solvePuzzle(2021, 4, 2) { Day4(it) }
 
-object Day4 : Day(2021, 4) {
-    init {
-//        useSampleInput {
-//            """
-//                7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
-//
-//                22 13 17 11  0
-//                 8  2 23  4 24
-//                21  9 14 16  7
-//                 6 10  3 18  5
-//                 1 12 20 15 19
-//
-//                 3 15  0  2 22
-//                 9 18 13 17  5
-//                19  8  7 25 23
-//                20 11 10 24  4
-//                14 21 16 12  6
-//
-//                14 21 17 24  4
-//                10 16 15  9 19
-//                18  8 23 26 20
-//                22 11 13  6  5
-//                 2  0 12  3  7
-//            """.trimIndent()
-//        }
-    }
+class Day4(val input: Input) : Puzzle {
     class Cell(val v: Int, var marked: Boolean = false)
     class Board(val rows: List<List<Cell>>) {
         fun hasBingo(): Boolean {
@@ -53,27 +30,27 @@ object Day4 : Day(2021, 4) {
         }
     }
 
-    val draw = lines[0].splitToInts()
+    val draw = input.lines[0].splitToInts()
 
-    val nBoards = lines.size / 6
+    val nBoards = input.lines.size / 6
     val boards = (0 until nBoards).map { i ->
-        val rows = lines.subList(2 + i*6, 7 + i*6)
+        val rows = input.lines.subList(2 + i*6, 7 + i*6)
         Board(rows.map { row -> row.split(" ").filter { it != "" }.map { Cell(it.toInt()) } })
     }
 
-    override fun level1(): String {
+    override fun solveLevel1(): Any {
         draw.forEach { number ->
             boards.forEach { board ->
                 board.markNumber(number)
                 if (board.hasBingo()) {
-                    return "${board.unmarkedSum() * number}"
+                    return board.unmarkedSum() * number
                 }
             }
         }
         return ""
     }
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         val finishedBoards = HashSet<Board>()
         draw.forEach { number ->
             boards.forEach nested@ { board ->
@@ -85,7 +62,7 @@ object Day4 : Day(2021, 4) {
 
                     if (finishedBoards.size == nBoards) {
                         // Was the last one to finish.
-                        return "${board.unmarkedSum() * number}"
+                        return board.unmarkedSum() * number
                     }
                 }
             }

@@ -1,19 +1,15 @@
 package y21
 
-import common.Day
-import common.util.splitToInts
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
 
-fun main() = Day6(2)
+fun main() = solvePuzzle(2021, 6, 2) { Day6(it) }
 
-object Day6 : Day(2021, 6) {
-    init {
-//        useSampleInput { "3,4,3,1,2" }
-        dryRun = true
-    }
+class Day6(val input: Input) : Puzzle {
+    val fish = input.splitToInts()
 
-    val fish = lines[0].splitToInts()
-
-    override fun level1(): String {
+    override fun solveLevel1(): Any {
         var generation = fish
         val days = 80
         for (i in 0 until days) {
@@ -32,13 +28,13 @@ object Day6 : Day(2021, 6) {
             generation = nextGen
         }
 
-        return generation.size.toString()
+        return generation.size
     }
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         val days = 256
         val cache = FishCache(days)
-        return numFishAfterDaysWithCache(fish, days, cache).toString()
+        return numFishAfterDaysWithCache(fish, days, cache)
     }
 
     class FishCache(private val maxDays: Int) {

@@ -1,32 +1,17 @@
 package y21
 
-import common.Day
 import common.datastructures.Grid
 import common.datastructures.Line
 import common.datastructures.Point
-import common.util.toOrFrom
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
+import common.ext.toOrFrom
 
-fun main() = Day5(2)
+fun main() = solvePuzzle(2021, 5, 2) { Day5(it) }
 
-object Day5 : Day(2021, 5) {
-    init {
-//        useSampleInput {
-//            """
-//                0,9 -> 5,9
-//                8,0 -> 0,8
-//                9,4 -> 3,4
-//                2,2 -> 2,1
-//                7,0 -> 7,4
-//                6,4 -> 2,0
-//                0,9 -> 2,9
-//                3,4 -> 1,4
-//                0,0 -> 8,8
-//                5,5 -> 8,2
-//            """.trimIndent()
-//        }
-    }
-
-    val ventLines = lines.map { line ->
+class Day5(val input: Input) : Puzzle {
+    val ventLines = input.lines.map { line ->
         val split = line.split(" -> ")
         val p0 = Point(split[0]).swap()
         val p1 = Point(split[1]).swap()
@@ -46,7 +31,7 @@ object Day5 : Day(2021, 5) {
         }
     }
 
-    override fun level1(): String {
+    override fun solveLevel1(): Any {
         ventLines.forEach { line ->
             if (line.from.row == line.to.row) {
                 // Horizontal line.
@@ -61,10 +46,10 @@ object Day5 : Day(2021, 5) {
             }
         }
         println(grid)
-        return grid.cells().count { it.value > 1 }.toString()
+        return grid.cells().count { it.value > 1 }
     }
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         ventLines.forEach { line ->
             if (line.from.row == line.to.row) {
                 // Horizontal line.
@@ -92,6 +77,6 @@ object Day5 : Day(2021, 5) {
             }
         }
         println(grid)
-        return grid.cells().count { it.value > 1 }.toString()
+        return grid.cells().count { it.value > 1 }
     }
 }

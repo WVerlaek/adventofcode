@@ -1,42 +1,26 @@
 package y21
 
-import common.Day
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-fun main() = Day3(2)
+fun main() = solvePuzzle(2021, 3, 2) { Day3(it) }
 
-object Day3 : Day(2021, 3) {
-    init {
-//        useSampleInput {
-//            """
-//                00100
-//                11110
-//                10110
-//                10111
-//                10101
-//                01111
-//                00111
-//                11100
-//                10000
-//                11001
-//                00010
-//                01010
-//            """.trimIndent()
-//        }
-    }
-    val digits = lines[0].length
+class Day3(val input: Input) : Puzzle {
+    val digits = input.lines[0].length
 
-    override fun level1(): String {
-        val half = if (lines.size % 2 == 0) lines.size / 2 else (lines.size + 1) / 2
+    override fun solveLevel1(): Any {
+        val half = if (input.lines.size % 2 == 0) input.lines.size / 2 else (input.lines.size + 1) / 2
         val gammaBin = (0 until digits).map { col ->
-            val isOne = lines.count { it[col] == '1' } >= half
+            val isOne = input.lines.count { it[col] == '1' } >= half
             if (isOne) "1" else "0"
         }
         val gamma = gammaBin.joinToString(separator = "").toLong(2)
         // eps = 2^digits - 1 - gamma
         val eps = 2.0.pow(digits.toDouble()).roundToInt() - 1 - gamma
-        return "${gamma * eps}"
+        return gamma * eps
     }
 
     fun mcv(values: List<Boolean>): Boolean {
@@ -45,7 +29,7 @@ object Day3 : Day(2021, 3) {
 
     fun lcv(values: List<Boolean>) = !mcv(values)
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         fun List<String>.getRating(i: Int, mostCommon: Boolean): String {
             if (size == 1) return this[0]
 
@@ -56,12 +40,12 @@ object Day3 : Day(2021, 3) {
             return newList.getRating(i + 1, mostCommon)
         }
 
-        val oxy = lines.getRating(0, true)
-        val co2 = lines.getRating(0, false)
+        val oxy = input.lines.getRating(0, true)
+        val co2 = input.lines.getRating(0, false)
 
         val ol = oxy.toLong(2)
         val cl = co2.toLong(2)
         println("o: ${ol}, c: $cl")
-        return "${ol * cl}"
+        return ol * cl
     }
 }

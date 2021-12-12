@@ -1,4 +1,4 @@
-package common.util
+package common.ext
 
 fun <T> List<Set<T>>.intersectAll(): Set<T> {
     require(isNotEmpty())

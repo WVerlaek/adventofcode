@@ -1,10 +1,12 @@
 package y21
 
-import common.Day
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
 
-fun main() = Day10(2)
+fun main() = solvePuzzle(2021, 10, 2) { Day10(it) }
 
-object Day10 : Day(2021, 10) {
+class Day10(val input: Input) : Puzzle {
     enum class Chunk(val open: Char, val close: Char) {
         A('(', ')'),
         B('[', ']'),
@@ -32,27 +34,10 @@ object Day10 : Day(2021, 10) {
             }
     }
 
-    init {
-//        useSampleInput {
-//            """
-//                [({(<(())[]>[[{[]{<()<>>
-//                [(()[<>])]({[<{<<[]>>(
-//                {([(<{}[<>[]}>{[]{[(<()>
-//                (((({<>}<{<{<>}{[]{[]{}
-//                [[<[([]))<([[{}[[()]]]
-//                [{[{({}]{}}([{[{{{}}([]
-//                {<[[]]>}<{[{[{[]{()[[[]
-//                [<(<(<(<{}))><([]([]()
-//                <{([([[(<>()){}]>(<<{{
-//                <{([{{}}[<[[[<>{}]]]>[]]
-//            """.trimIndent()
-//        }
-    }
-
-    override fun level1(): String {
-        return lines.sumOf { line ->
+    override fun solveLevel1(): Any {
+        return input.lines.sumOf { line ->
             parseLine(line.toCharArray().toList()).illegal?.pointsP1 ?: 0
-        }.toString()
+        }
     }
 
     class ParseResult(val illegal: Chunk?, val remainingStack: ArrayDeque<Chunk>)
@@ -77,13 +62,12 @@ object Day10 : Day(2021, 10) {
         return ParseResult(null, stack)
     }
 
-    override fun level2(): String {
-        return lines.map { it.toCharArray().toList() }
+    override fun solveLevel2(): Any {
+        return input.lines.map { it.toCharArray().toList() }
             .map { parseLine(it) }
             .filter { it.illegal == null }
             .map { it.remainingStack.foldRight(0L) { chunk, acc -> acc * 5L + chunk.pointsP2 } }
             .sorted()
             .let { it[it.size / 2] }
-            .toString()
     }
 }

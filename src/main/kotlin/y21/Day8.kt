@@ -1,33 +1,18 @@
 package y21
 
-import common.Day
-import common.util.intersectAll
-import common.util.unionAll
+import common.puzzle.Input
+import common.puzzle.Puzzle
+import common.puzzle.solvePuzzle
+import common.ext.intersectAll
+import common.ext.unionAll
 
-fun main() = Day8(2)
+fun main() = solvePuzzle(2021, 8, 2) { Day8(it) }
 
 typealias Pattern = String
 typealias Signal = Char
 typealias Segment = Char
 
-object Day8 : Day(2021, 8) {
-    init {
-        useSampleInput {
-            """
-                be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
-                edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
-                fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg
-                fbegcd cbd adcefb dageb afcb bc aefdc ecdab fgdeca fcdbega | efabcd cedba gadfec cb
-                aecbfdg fbg gf bafeg dbefa fcge gcbea fcaegb dgceab fcbdga | gecf egdcabf bgf bfgea
-                fgeab ca afcebg bdacfeg cfaedg gcfdb baec bfadeg bafgc acf | gebdcfa ecba ca fadegcb
-                dbcfg fgd bdegcaf fgec aegbdf ecdfab fbedc dacgb gdcebf gf | cefg dcbef fcge gbcadfe
-                bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef
-                egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
-                gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
-            """.trimIndent()
-        }
-    }
-
+class Day8(val input: Input) : Puzzle {
     class Entry(val patterns: List<String>, val outputDigits: List<String>) {
         constructor(line: String) : this(
             line.split(" | ")[0].split(" "),
@@ -35,7 +20,7 @@ object Day8 : Day(2021, 8) {
         )
     }
 
-    val entries = lines.map { Entry(it) }
+    val entries = input.lines.map { Entry(it) }
 
     // If there's a 1 and 7, the unique digit in 7 is an 'a'.
     // If there's a
@@ -64,25 +49,25 @@ object Day8 : Day(2021, 8) {
         result
     }
 
-    override fun level1(): String {
+    override fun solveLevel1(): Any {
         return entries.sumOf { entry ->
             entry.outputDigits.filter {
                 it.length in setOf(2, 4, 3, 7)
             }.size
-        }.toString()
+        }
     }
 
-    override fun level2(): String {
+    override fun solveLevel2(): Any {
         return entries.sumOf { entry ->
             val signalMapping = PatternSolver(entry.patterns).solve()
             entry.outputDigits
                 .map { pattern -> signalMapping.getDigit(pattern) }
                 .joinToString("") { it.toString() }
                 .toInt()
-        }.toString()
+        }
     }
 
-    class SignalMapping(val mapping: Map<Signal, Segment>) {
+    inner class SignalMapping(val mapping: Map<Signal, Segment>) {
         fun getDigit(pattern: Pattern): Int {
             val segments = pattern.map { signal -> mapping.getValue(signal) }
                 .sorted()
@@ -90,7 +75,7 @@ object Day8 : Day(2021, 8) {
         }
     }
 
-    class PatternSolver(val patterns: List<Pattern>) {
+    inner class PatternSolver(val patterns: List<Pattern>) {
         fun solve(): SignalMapping {
             val mapping = mutableMapOf<Signal, Segment>()
             val patternToPossibleDigits = mutableMapOf<Pattern, List<String>>()
