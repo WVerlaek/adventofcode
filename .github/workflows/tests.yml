@@ -27,6 +27,7 @@ jobs:
           distribution: zulu
 
       # Runs a single command using the runners shell
-      - uses: gradle/gradle-build-action@v2
+      - name: test
+        uses: gradle/gradle-build-action@v2
         with:
           arguments: test
