@@ -3,18 +3,18 @@ package y21
 import common.datastructures.Grid
 import common.datastructures.Line
 import common.datastructures.Point
+import common.ext.toOrFrom
 import common.puzzle.Input
 import common.puzzle.Puzzle
 import common.puzzle.solvePuzzle
-import common.ext.toOrFrom
 
 fun main() = solvePuzzle(2021, 5, 2) { Day5(it) }
 
 class Day5(val input: Input) : Puzzle {
     val ventLines = input.lines.map { line ->
         val split = line.split(" -> ")
-        val p0 = Point(split[0]).swap()
-        val p1 = Point(split[1]).swap()
+        val p0 = Point(split[0])
+        val p1 = Point(split[1])
         Line(p0, p1)
     }
 

@@ -44,3 +44,17 @@ class Grid<T>(val rows: List<List<Cell<T>>>) {
         return rows.joinToString("\n") { it.joinToString(",") { cell -> cellFormatter(cell) } }
     }
 }
+
+fun List<Point>.toGrid(): Grid<Boolean> {
+    val minRow = minOf(minOf { it.row }, 0)
+    val minCol = minOf(minOf { it.col }, 0)
+    val translated = map { it.copy(col = it.col - minCol, row = it.row - minRow) }
+        .toSet()
+    val maxRow = translated.maxOf { it.row }
+    val maxCol = translated.maxOf { it.col }
+    return Grid(maxRow + 1, maxCol + 1) { row, col ->
+        Point(col, row) in translated
+    }.also {
+        grid -> grid.cellFormatter = { cell -> if (cell.value) "#" else "." }
+    }
+}
