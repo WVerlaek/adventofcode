@@ -16,7 +16,7 @@ sealed class Fold(val n: Int) {
 class Day13(val input: Input) : Puzzle {
     val startFolds = input.lines.indexOfFirst { it.startsWith("fold") }
     val points = input.lines.subList(0, startFolds - 1)
-        .map { Point(it) }
+        .map { Point.parse(it) }
     val folds = input.lines.subList(startFolds, input.lines.size)
         .map { line ->
             val n = line.substringAfter("=").toInt()
