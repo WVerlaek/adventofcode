@@ -43,9 +43,9 @@ internal class Point3Test {
         assertEquals(Point3(1, 2, 3), p.rotated90(Axis.X, 4))
 
         assertEquals(Point3(1, 2, 3), p.rotated90(Axis.Y, 0))
-        assertEquals(Point3(3, 2, -1), p.rotated90(Axis.Y, 1))
+        assertEquals(Point3(-3, 2, 1), p.rotated90(Axis.Y, 1))
         assertEquals(Point3(-1, 2, -3), p.rotated90(Axis.Y, 2))
-        assertEquals(Point3(-3, 2, 1), p.rotated90(Axis.Y, 3))
+        assertEquals(Point3(3, 2, -1), p.rotated90(Axis.Y, 3))
         assertEquals(Point3(1, 2, 3), p.rotated90(Axis.Y, 4))
 
         assertEquals(Point3(1, 2, 3), p.rotated90(Axis.Z, 0))
