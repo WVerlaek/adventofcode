@@ -76,9 +76,8 @@ sealed class Element(var parent: Element?) {
         }
     }
 
-    @Suppress("ControlFlowWithEmptyBody")
     fun fullyReduce() {
-        while (reduce()) {}
+        while (reduce()) Unit
     }
 
     fun addNumber(i: Int, addToLeft: Boolean) {
@@ -157,25 +156,20 @@ sealed class Element(var parent: Element?) {
 class Day18(val input: Input) : Puzzle {
     override fun solveLevel1(): Any {
         val snailfishNumbers = input.lines.map { Element.parse(it) }
-        var result = snailfishNumbers[0]
-        for (i in 1 until snailfishNumbers.size) {
-            result += snailfishNumbers[i]
-        }
-        return result.magnitude()
+        return snailfishNumbers.reduce { acc, number -> acc + number }.magnitude()
     }
 
     override fun solveLevel2(): Any {
-        var maxMagnitude = 0L
-        for (i in 0 until input.lines.size) {
-            for (j in 0 until input.lines.size) {
-                if (i == j) continue
+        return sequence {
+            for (i in 0 until input.lines.size) {
+                for (j in 0 until input.lines.size) {
+                    if (i == j) continue
 
-                val numI = Element.parse(input.lines[i])
-                val numJ = Element.parse(input.lines[j])
-                val mag = (numI + numJ).magnitude()
-                maxMagnitude = maxOf(maxMagnitude, mag)
+                    val numI = Element.parse(input.lines[i])
+                    val numJ = Element.parse(input.lines[j])
+                    yield((numI + numJ).magnitude())
+                }
             }
-        }
-        return maxMagnitude
+        }.maxOf { it }
     }
 }
