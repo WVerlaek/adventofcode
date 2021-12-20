@@ -21,6 +21,8 @@ class Grid<T>(val rows: List<List<Cell<T>>>) {
     val numRows: Int = rows.size
     val numCols: Int = rows[0].size
 
+    fun withinBounds(row: Int, col: Int) = row in rows.indices && col in rows[row].indices
+
     fun neighbors(cell: Cell<T>, includeDiagonals: Boolean = false): List<Cell<T>> {
         val xs = if (includeDiagonals) neighsXDiags else neighsX
         val ys = if (includeDiagonals) neighsYDiags else neighsY
@@ -39,9 +41,14 @@ class Grid<T>(val rows: List<List<Cell<T>>>) {
 
     fun copy(): Grid<T> = Grid(rows.map { row -> row.map { cell -> cell.copy() } })
 
-    var cellFormatter: (Cell<T>) -> String = { it.value.toString() }
+    class CellFormatter<T>(val cellFormat: (Cell<T>) -> CharSequence, val cellSeparator: String = ",")
+    val boolFormatter = CellFormatter<T>({ cell -> if (cell.value as Boolean) "#" else "." }, "")
+    val anyFormatter = CellFormatter<T>({ it.value.toString() })
+
+    var cellFormatter: CellFormatter<T> = if (cells().firstOrNull()?.value is Boolean) boolFormatter else anyFormatter
+
     override fun toString(): String {
-        return rows.joinToString("\n") { it.joinToString(",") { cell -> cellFormatter(cell) } }
+        return rows.joinToString("\n") { it.joinToString(cellFormatter.cellSeparator, transform = cellFormatter.cellFormat) }
     }
 }
 
@@ -54,7 +61,5 @@ fun List<Point>.toGrid(): Grid<Boolean> {
     val maxCol = translated.maxOf { it.col }
     return Grid(maxRow + 1, maxCol + 1) { row, col ->
         Point(col, row) in translated
-    }.also {
-        grid -> grid.cellFormatter = { cell -> if (cell.value) "#" else "." }
     }
 }

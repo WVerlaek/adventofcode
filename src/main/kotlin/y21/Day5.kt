@@ -23,12 +23,12 @@ class Day5(val input: Input) : Puzzle {
     val grid = Grid(height, width) { _, _ -> 0 }
 
     init {
-        grid.cellFormatter = {
+        grid.cellFormatter = Grid.CellFormatter({
             when (it.value) {
                 0 -> "."
                 else -> it.value.toString()
             }
-        }
+        })
     }
 
     override fun solveLevel1(): Any {
