@@ -19,4 +19,6 @@ A small framework is created to speed up solving a day's puzzle:
 
 Additionally, uses IntelliJ [live templates](https://www.jetbrains.com/help/idea/creating-and-editing-live-templates.html):
   * Template to solve a day's puzzle
-  * Template for unit tests with sample input for a day's solution
+  * Template to unit test a solution with sample input
+
+A GitHub Action is configured to run all unit tests on each commit.
