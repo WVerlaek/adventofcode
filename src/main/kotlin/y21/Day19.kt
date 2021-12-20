@@ -6,7 +6,7 @@ import com.google.common.graph.Graph
 import com.google.common.graph.GraphBuilder
 import com.google.common.graph.MutableGraph
 import common.datastructures.Point3
-import common.ext.bfs
+import common.ext.dfs
 import common.ext.reduceGraphBFS
 import common.puzzle.Input
 import common.puzzle.Puzzle
@@ -134,7 +134,7 @@ class Day19(val input: Input) : Puzzle {
 
     fun Graph<ScannerNode>.scannerPositions(start: Scanner): Map<Scanner, Point3> {
         val result = HashMap<Scanner, Point3>()
-        bfs(ScannerNode(start)) { parent: Pair<Scanner, Point3>?, node ->
+        dfs(ScannerNode(start)) { parent: Pair<Scanner, Point3>?, node ->
             val relativeToFirstScanner = when (parent) {
                 null -> node.scanner
                 else -> {

@@ -11,11 +11,11 @@ fun <T,S> Graph<T>.reduceGraphBFS(node: T, visited: MutableSet<T> = HashSet(), r
     return reduction(node, reduced)
 }
 
-fun <T,S> Graph<T>.bfs(node: T, visited: MutableSet<T> = HashSet(), parent: S? = null, transform: (parent: S?, node: T) -> S) {
+fun <T,S> Graph<T>.dfs(node: T, visited: MutableSet<T> = HashSet(), parent: S? = null, transform: (parent: S?, node: T) -> S) {
     val children = successors(node) - visited
     visited += children
     val transformed = transform(parent, node)
     children.forEach { child ->
-        bfs(child, visited, transformed, transform)
+        dfs(child, visited, transformed, transform)
     }
 }

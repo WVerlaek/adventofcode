@@ -2,6 +2,7 @@ package y21
 
 import common.datastructures.Cell
 import common.datastructures.Grid
+import common.ext.repeatRun
 import common.puzzle.Input
 import common.puzzle.Puzzle
 import common.puzzle.solvePuzzle
@@ -41,13 +42,13 @@ class Day11(val input: Input) : Puzzle {
 
     override fun solveLevel1(): Any {
         val steps = 100
-        var grid = startingGrid
         var totalFlashes = 0L
-        for (i in 0 until steps) {
-            val (next, flashes) = grid.simulateStep()
-            grid = next
+        startingGrid.repeatRun(steps) {
+            val (next, flashes) = simulateStep()
             totalFlashes += flashes
+            next
         }
+
         return totalFlashes
     }
 

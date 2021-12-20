@@ -1,7 +1,7 @@
 package y21
 
 import common.datastructures.Grid
-import common.ext.repeatApply
+import common.ext.repeatRun
 import common.ext.toInt
 import common.puzzle.Input
 import common.puzzle.Puzzle
@@ -52,14 +52,14 @@ class Day20(val input: Input) : Puzzle {
 
     override fun solveLevel1(): Any {
         return originalImage
-            .repeatApply(2) { it.enhance(enhancement) }
+            .repeatRun(2) { enhance(enhancement) }
             .also { println(it.grid) }
             .grid.cells().count { it.value }
     }
 
     override fun solveLevel2(): Any {
         return originalImage
-            .repeatApply(50) { it.enhance(enhancement) }
+            .repeatRun(50) { enhance(enhancement) }
             .also { println(it.grid) }
             .grid.cells().count { it.value }
     }
