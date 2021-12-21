@@ -4,10 +4,10 @@ package common.ext
 
 import com.google.common.graph.Graph
 
-fun <T,S> Graph<T>.reduceGraphBFS(node: T, visited: MutableSet<T> = HashSet(), reduction: (node: T, reducedChildren: List<S>) -> S): S {
+fun <T,S> Graph<T>.reduceGraphDfs(node: T, visited: MutableSet<T> = HashSet(), reduction: (node: T, reducedChildren: List<S>) -> S): S {
     val children = successors(node) - visited
     visited += children
-    val reduced = children.map { reduceGraphBFS(it, visited, reduction) }
+    val reduced = children.map { reduceGraphDfs(it, visited, reduction) }
     return reduction(node, reduced)
 }
 

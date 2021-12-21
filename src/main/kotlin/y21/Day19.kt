@@ -7,7 +7,7 @@ import com.google.common.graph.GraphBuilder
 import com.google.common.graph.MutableGraph
 import common.datastructures.Point3
 import common.ext.dfs
-import common.ext.reduceGraphBFS
+import common.ext.reduceGraphDfs
 import common.puzzle.Input
 import common.puzzle.Puzzle
 import common.puzzle.solvePuzzle
@@ -121,7 +121,7 @@ class Day19(val input: Input) : Puzzle {
 
     fun Graph<ScannerNode>.distinctBeacons(start: Scanner): Int {
         // Reduce graph by merging all Scanners into the first Scanner.
-        val merged = reduceGraphBFS(ScannerNode(start)) { node, reducedChildren: List<Scanner> ->
+        val merged = reduceGraphDfs(ScannerNode(start)) { node, reducedChildren: List<Scanner> ->
             var result = node.scanner
             for (child in reducedChildren) {
                 val transformedChild = node.scanner.findOverlap(child)!!
