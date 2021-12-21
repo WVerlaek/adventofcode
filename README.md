@@ -22,3 +22,14 @@ Additionally, uses IntelliJ [live templates](https://www.jetbrains.com/help/idea
   * Template to unit test a solution with sample input
 
 A GitHub Action is configured to run all unit tests on each commit.
+
+
+### AoC API session token
+
+A session token is needed to make API requests to AoC (for reading input and uploading answers).
+
+To get this token:
+
+* Log in on https://adventofcode.com/ 
+* Read the `session` cookie
+* Put its value in this file: `.secrets/session` (.gitignored)
