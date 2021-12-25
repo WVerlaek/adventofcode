@@ -11,13 +11,9 @@ import common.puzzle.Puzzle
 import common.puzzle.solvePuzzle
 import java.util.*
 
-fun main() = solvePuzzle(2021, 23, 1) { Day23(it) }
-
-// #############
-// #01.4.7.A.DE#
-// ###2#5#8#B###
-//   #3#6#9#C#
-//   #########
+// 2 took 1153979ms
+//         301578ms
+fun main() = solvePuzzle(2021, 23, 2) { Day23(it) }
 
 enum class NodeType {
     Hall, A, B, C, D
@@ -39,13 +35,21 @@ val nodes = listOf(
     NodeType.Hall,
     NodeType.A,
     NodeType.A,
+    NodeType.A,
+    NodeType.A,
     NodeType.Hall,
+    NodeType.B,
+    NodeType.B,
     NodeType.B,
     NodeType.B,
     NodeType.Hall,
     NodeType.C,
     NodeType.C,
+    NodeType.C,
+    NodeType.C,
     NodeType.Hall,
+    NodeType.D,
+    NodeType.D,
     NodeType.D,
     NodeType.D,
     NodeType.Hall,
@@ -54,66 +58,122 @@ val nodes = listOf(
 
 val firstRoomForType = mapOf(
     NodeType.A to 2,
-    NodeType.B to 5,
-    NodeType.C to 8,
-    NodeType.D to 11,
+    NodeType.B to 7,
+    NodeType.C to 12,
+    NodeType.D to 17,
 )
+
+val deeperRoomsForType = mapOf(
+    NodeType.A to intArrayOf(3, 4, 5),
+    NodeType.B to intArrayOf(8, 9, 10),
+    NodeType.C to intArrayOf(13, 14, 15),
+    NodeType.D to intArrayOf(18, 19, 20),
+)
+
+fun hallwayGraph(): ValueGraph<Node, Int> {
+    // # # # # # # # # # # # # #
+    // # 0 1 . 6 . 11. 16. 2122#
+    // # # # 2 # 7 # 12# 17# # #
+    val graph: MutableValueGraph<Node, Int> = ValueGraphBuilder.undirected().build()
+    listOf(0, 1, 2, 6, 7, 11, 12, 16, 17, 21, 22).map { nodes[it] }.forEach { graph.addNode(it) }
+    graph.putEdgeValue(nodes[0], nodes[1], 1)
+    graph.putEdgeValue(nodes[1], nodes[2], 2)
+    graph.putEdgeValue(nodes[1], nodes[6], 2)
+    graph.putEdgeValue(nodes[2], nodes[6], 2)
+    graph.putEdgeValue(nodes[6], nodes[7], 2)
+    graph.putEdgeValue(nodes[6], nodes[11], 2)
+    graph.putEdgeValue(nodes[7], nodes[11], 2)
+    graph.putEdgeValue(nodes[11], nodes[12], 2)
+    graph.putEdgeValue(nodes[11], nodes[16], 2)
+    graph.putEdgeValue(nodes[12], nodes[16], 2)
+    graph.putEdgeValue(nodes[16], nodes[17], 2)
+    graph.putEdgeValue(nodes[16], nodes[21], 2)
+    graph.putEdgeValue(nodes[17], nodes[21], 2)
+    graph.putEdgeValue(nodes[21], nodes[22], 1)
+    return graph
+}
 
 fun newBurrow(): ValueGraph<Node, Int> {
     // # # # # # # # # # # # # #
-    // # 0 1 . 4 . 7 . 10. 1314#
-    // # # # 2 # 5 # 8 # 11# # #
-    //     # 3 # 6 # 9 # 12#
+    // # 0 1 . 6 . 11. 16. 2122#
+    // # # # 2 # 7 # 12# 17# # #
+    //     # 3 # 8 # 13# 18#
+    //     # 4 # 9 # 14# 19#
+    //     # 5 # 10# 15# 20#
     //     # # # # # # # # #
     val graph: MutableValueGraph<Node, Int> = ValueGraphBuilder.undirected().build()
     nodes.forEach { graph.addNode(it) }
     graph.putEdgeValue(nodes[0], nodes[1], 1)
     graph.putEdgeValue(nodes[1], nodes[2], 2)
-    graph.putEdgeValue(nodes[1], nodes[4], 2)
+    graph.putEdgeValue(nodes[1], nodes[6], 2)
     graph.putEdgeValue(nodes[2], nodes[3], 1)
-    graph.putEdgeValue(nodes[2], nodes[4], 2)
-    graph.putEdgeValue(nodes[4], nodes[5], 2)
-    graph.putEdgeValue(nodes[4], nodes[7], 2)
-    graph.putEdgeValue(nodes[5], nodes[6], 1)
-    graph.putEdgeValue(nodes[5], nodes[7], 2)
-    graph.putEdgeValue(nodes[7], nodes[8], 2)
-    graph.putEdgeValue(nodes[7], nodes[10], 2)
+    graph.putEdgeValue(nodes[2], nodes[6], 2)
+    graph.putEdgeValue(nodes[3], nodes[4], 1)
+    graph.putEdgeValue(nodes[4], nodes[5], 1)
+    graph.putEdgeValue(nodes[6], nodes[7], 2)
+    graph.putEdgeValue(nodes[6], nodes[11], 2)
+    graph.putEdgeValue(nodes[7], nodes[8], 1)
+    graph.putEdgeValue(nodes[7], nodes[11], 2)
     graph.putEdgeValue(nodes[8], nodes[9], 1)
-    graph.putEdgeValue(nodes[8], nodes[10], 2)
-    graph.putEdgeValue(nodes[10], nodes[11], 2)
-    graph.putEdgeValue(nodes[10], nodes[13], 2)
-    graph.putEdgeValue(nodes[11], nodes[12], 1)
-    graph.putEdgeValue(nodes[11], nodes[13], 2)
+    graph.putEdgeValue(nodes[9], nodes[10], 1)
+    graph.putEdgeValue(nodes[11], nodes[12], 2)
+    graph.putEdgeValue(nodes[11], nodes[16], 2)
+    graph.putEdgeValue(nodes[12], nodes[13], 1)
+    graph.putEdgeValue(nodes[12], nodes[16], 2)
     graph.putEdgeValue(nodes[13], nodes[14], 1)
+    graph.putEdgeValue(nodes[14], nodes[15], 1)
+    graph.putEdgeValue(nodes[16], nodes[17], 2)
+    graph.putEdgeValue(nodes[16], nodes[21], 2)
+    graph.putEdgeValue(nodes[17], nodes[18], 1)
+    graph.putEdgeValue(nodes[17], nodes[21], 2)
+    graph.putEdgeValue(nodes[18], nodes[19], 1)
+    graph.putEdgeValue(nodes[19], nodes[20], 1)
+    graph.putEdgeValue(nodes[21], nodes[22], 1)
     return graph
 }
 
 class Day23(val input: Input) : Puzzle {
-    data class State(val aa: List<Int>, val bb: List<Int>, val cc: List<Int>, val dd: List<Int>, val lastMoved: Int?) {
-        init {
-            // TODO Remove
-//            require(aa[0] <= aa[1])
-//            require(bb[0] <= bb[1])
-//            require(cc[0] <= cc[1])
-//            require(dd[0] <= dd[1])
+    // Each list must have ascending values.
+    data class State(val aa: IntArray, val bb: IntArray, val cc: IntArray, val dd: IntArray, val lastMoved: Int?) {
+        val occupiedNodes: IntArray = (aa + bb + cc + dd)
+        val hash = occupiedNodes.contentHashCode()
+
+        override fun equals(other: Any?): Boolean {
+            return other is State && hash == other.hash && occupiedNodes.contentEquals(other.occupiedNodes)
         }
-        val occupiedNodes = (aa + bb + cc + dd) //.toSet()
 
-        fun isTarget() = aa[0] == 2 && aa[1] == 3 && bb[0] == 5 && bb[1] == 6 && cc[0] == 8 && cc[1] == 9 && dd[0] == 11 && dd[1] == 12
+        override fun hashCode(): Int {
+            return hash
+        }
 
-//        fun isTarget() = aa.all { nodes[it].type == NodeType.A } && bb.all { nodes[it].type == NodeType.B } && cc.all { nodes[it].type == NodeType.C } && dd.all { nodes[it].type == NodeType.D }
+        fun isTarget() = hash == targetHash && occupiedNodes.contentEquals(target)
+//            aa[0] == 2 && aa[1] == 3 && aa[2] == 4 && aa[3] == 5 &&
+//            bb[0] == 7 && bb[1] == 8 && bb[2] == 9 && bb[3] == 10 &&
+//            cc[0] == 12 && cc[1] == 13 && cc[2] == 14 && cc[3] == 15 &&
+//            dd[0] == 17 && dd[1] == 18 && dd[2] == 19 && dd[3] == 20
 
         companion object {
+            val target = intArrayOf(2, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14, 15, 17, 18, 19, 20)
+            val targetHash = target.contentHashCode()
+
             fun parse(lines: List<String>): State {
                 val posToNode = mapOf(
                     Point(3, 2) to 2,
                     Point(3, 3) to 3,
-                    Point(5, 2) to 5,
-                    Point(5, 3) to 6,
-                    Point(7, 2) to 8,
-                    Point(7, 3) to 9,
-                    Point(9, 2) to 11,
-                    Point(9, 3) to 12,
+                    Point(3, 4) to 4,
+                    Point(3, 5) to 5,
+                    Point(5, 2) to 7,
+                    Point(5, 3) to 8,
+                    Point(5, 4) to 9,
+                    Point(5, 5) to 10,
+                    Point(7, 2) to 12,
+                    Point(7, 3) to 13,
+                    Point(7, 4) to 14,
+                    Point(7, 5) to 15,
+                    Point(9, 2) to 17,
+                    Point(9, 3) to 18,
+                    Point(9, 4) to 19,
+                    Point(9, 5) to 20,
                 )
                 val aa = mutableListOf<Int>()
                 val bb = mutableListOf<Int>()
@@ -128,14 +188,18 @@ class Day23(val input: Input) : Puzzle {
                         else -> throw IllegalArgumentException("Invalid char $c at $p")
                     }
                 }
-                return State(aa.sorted(), bb.sorted(), cc.sorted(), dd.sorted(), null)
+                return State(aa.sorted().toIntArray(), bb.sorted().toIntArray(), cc.sorted().toIntArray(), dd.sorted().toIntArray(), null)
             }
         }
     }
 
-    val initialState = State.parse(input.lines)
-
     override fun solveLevel1(): Any {
+        val initialState = State.parse(input.lines)
+        return solve(initialState)
+    }
+
+    private fun solve(initialState: State): Int {
+        val hallway = hallwayGraph()
         val burrow = newBurrow()
 
         data class Cost(val cost: Int, val state: State)
@@ -162,8 +226,8 @@ class Day23(val input: Input) : Puzzle {
                 println("${cur.cost} pathFind $pathFindCount")
             }
 
-            data class Next(val newNodes: List<Int>, val cost: Int, val lastMoved: Int?)
-            fun tryMoves(nodeIds: List<Int>, target: NodeType, state: State): Sequence<Next> {
+            data class Next(val newNodes: IntArray, val cost: Int, val lastMoved: Int?)
+            fun tryMoves(nodeIds: IntArray, target: NodeType, state: State): Sequence<Next> {
                 return sequence {
                     nodeIds.forEachIndexed { index, nodeIdx ->
                         val node = nodes[nodeIdx]
@@ -178,19 +242,13 @@ class Day23(val input: Input) : Puzzle {
                             }
 
                             // Check if room neighbour doesn't contain different type.
-                            val toCheck = when (targetNodeIdx) {
-                                2 -> 3
-                                5 -> 6
-                                8 -> 9
-                                11 -> 12
-                                else -> -1
-                            }
-                            if (toCheck in state.occupiedNodes && toCheck !in nodeIds) {
+                            val roomsToCheck = deeperRoomsForType.getValue(target)
+                            if (roomsToCheck.any { it in state.occupiedNodes && it !in nodeIds }) {
                                 // Other type is already in this room. Can't move in.
                                 return@forEachIndexed
                             }
 
-                            val pathToNode = burrow.findShortestUnoccupiedPath(nodeIdx, targetNodeIdx, state.occupiedNodes)
+                            val pathToNode = hallway.findShortestUnoccupiedPath(nodeIdx, targetNodeIdx, state.occupiedNodes)
                                 ?: return@forEachIndexed // No path found.
                             pathFindCount++
 
@@ -201,9 +259,10 @@ class Day23(val input: Input) : Puzzle {
                                 cost += edgeCost
                             }
                             val totalCost = cost * target.energy
-                            val newList = nodeIds.toMutableList()
+                            val newList = nodeIds.copyOf()
                             newList[index] = targetNodeIdx
-                            yield(Next(newList.sorted(), totalCost, targetNodeIdx))
+                            newList.sort()
+                            yield(Next(newList, totalCost, targetNodeIdx))
                             return@forEachIndexed
                         }
 
@@ -217,48 +276,36 @@ class Day23(val input: Input) : Puzzle {
                             }
 
                             if (node.type == target && adj.type != target) {
-                                // Cannot move out of target room.
-                                val toCheck = when (node.id) {
-                                    2 -> 3
-                                    5 -> 6
-                                    8 -> 9
-                                    11 -> 12
-                                    else -> -1
-                                }
-                                // todo...
-                                if (toCheck in nodeIds || toCheck !in state.occupiedNodes) {
+                                // Check if we should consider moving out of target room. Only do if there are other types in this room that need to go out.
+                                val roomsToCheck = deeperRoomsForType.getValue(target)
+                                if (roomsToCheck.none { it in state.occupiedNodes && it !in nodeIds }) {
                                     // Can't move out, all nodes in this room already of the right type.
                                     continue
                                 }
                             }
 
                             if (node.type == target && adjIdx < node.id) {
-                                // Don't move towards door if already in correct room.
-                                continue
+                                // Don't move towards door if already in correct room and no other nodes behind me.
+                                if (deeperRoomsForType.getValue(target).none { it > nodeIdx && it in state.occupiedNodes && it !in nodeIds }) {
+                                    continue
+                                }
                             }
 
                             if (node.type == NodeType.Hall && adj.type == target) {
                                 // Check if room doesn't contain different type.
-                                val toCheck = when (adj.id) {
-                                    2 -> 3
-                                    5 -> 6
-                                    8 -> 9
-                                    11 -> 12
-                                    else -> -1
-                                }
-                                if (toCheck in state.occupiedNodes && toCheck !in nodeIds) {
+                                val roomsToCheck = deeperRoomsForType.getValue(target)
+                                if (roomsToCheck.any { it in state.occupiedNodes && it !in nodeIds }) {
                                     // Other type is already in this room. Can't move in.
                                     continue
                                 }
                             }
 
-                            // TODO Other rules
-
                             val cost = burrow.edgeValue(node, adj).get() * target.energy
                             // Move node to adj.
-                            val newList = nodeIds.toMutableList()
+                            val newList = nodeIds.copyOf()
                             newList[index] = adjIdx
-                            yield(Next(newList.sorted(), cost, adjIdx))
+                            newList.sort()
+                            yield(Next(newList, cost, adjIdx))
                         }
                     }
                 }
@@ -266,19 +313,19 @@ class Day23(val input: Input) : Puzzle {
 
             for ((newAA, cost, lastMoved) in tryMoves(state.aa, NodeType.A, state)) {
                 val newState = state.copy(aa = newAA, lastMoved = lastMoved)
-                queue += Cost(cur.cost + cost, newState)
+                Cost(cur.cost + cost, newState).let { if (it.state !in visited) queue += it }
             }
             for ((newBB, cost, lastMoved) in tryMoves(state.bb, NodeType.B, state)) {
                 val newState = state.copy(bb = newBB, lastMoved = lastMoved)
-                queue += Cost(cur.cost + cost, newState)
+                Cost(cur.cost + cost, newState).let { if (it.state !in visited) queue += it }
             }
             for ((newCC, cost, lastMoved) in tryMoves(state.cc, NodeType.C, state)) {
                 val newState = state.copy(cc = newCC, lastMoved = lastMoved)
-                queue += Cost(cur.cost + cost, newState)
+                Cost(cur.cost + cost, newState).let { if (it.state !in visited) queue += it }
             }
             for ((newDD, cost, lastMoved) in tryMoves(state.dd, NodeType.D, state)) {
                 val newState = state.copy(dd = newDD, lastMoved = lastMoved)
-                queue += Cost(cur.cost + cost, newState)
+                Cost(cur.cost + cost, newState).let { if (it.state !in visited) queue += it }
             }
         }
 
@@ -286,7 +333,8 @@ class Day23(val input: Input) : Puzzle {
     }
 
     override fun solveLevel2(): Any {
-        TODO()
+        val initialState = input.lines.subList(0, 3) + listOf("  #D#C#B#A#", "  #D#B#A#C#") + input.lines.subList(3, 5)
+        return solve(State.parse(initialState))
     }
 }
 
@@ -303,14 +351,20 @@ val reusableQueue = PriorityQueue<Dist>(compareBy { it.dist })
 val reusableVisited = mutableSetOf<Int>()
 val reusableParents = Array<Dist?>(nodes.size) { null }
 
-fun ValueGraph<Node, Int>.findShortestUnoccupiedPath(from: Int, to: Int, occupied: List<Int>): List<Int>? {
+fun ValueGraph<Node, Int>.findShortestUnoccupiedPath(from: Int, to: Int, occupied: IntArray): IntArray? {
     reusableQueue.clear()
     reusableVisited.clear()
     reusableParents.forEachIndexed { index, _ -> reusableParents[index] = null }
     reusableQueue += Dist(0, from, null)
 
-    fun path(d: Dist): List<Int> {
-        return (d.parent?.let { path(it) } ?: emptyList()) + d.node
+    fun path(d: Dist): IntArray {
+        val route = mutableListOf<Int>()
+        var cur: Dist? = d
+        while (cur != null) {
+            route += cur.node
+            cur = cur.parent
+        }
+        return route.toIntArray()
     }
 
     while (reusableQueue.isNotEmpty()) {
