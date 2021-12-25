@@ -10,4 +10,16 @@ operator fun IntRange.compareTo(i: Int): Int {
     }
 }
 
+fun IntRange.intersect(other: IntRange): IntRange {
+    require(this.step ==  1)
+    require(other.step == 1)
+    return maxOf(first, other.first)..minOf(last, other.last)
+}
+
+val IntRange.size: Int
+    get() {
+        require(step == 1)
+        return maxOf(0, last - first + 1)
+    }
+
 operator fun Int.compareTo(range: IntRange) = -range.compareTo(this)
