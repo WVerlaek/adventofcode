@@ -18,6 +18,9 @@ import kotlin.math.abs
 //         165884ms
 //         131380ms
 //          94688ms
+//           4214ms
+//           3247ms
+//           1298ms
 fun main() = solvePuzzle(2021, 23, 2) { Day23(it) }
 
 enum class NodeType {
@@ -82,6 +85,8 @@ val deeperRoomsForType = mapOf(
     NodeType.C to intArrayOf(13, 14, 15),
     NodeType.D to intArrayOf(18, 19, 20),
 )
+
+val hallwayNodes = intArrayOf(0, 1, 6, 11, 16, 21, 22)
 
 fun hallwayGraph(): ValueGraph<Int, Int> {
     // # # # # # # # # # # # # #
@@ -160,10 +165,6 @@ class Day23(val input: Input) : Puzzle {
         }
 
         fun isTarget() = hash == targetHash && occupiedNodes.contentEquals(target)
-//            aa[0] == 2 && aa[1] == 3 && aa[2] == 4 && aa[3] == 5 &&
-//            bb[0] == 7 && bb[1] == 8 && bb[2] == 9 && bb[3] == 10 &&
-//            cc[0] == 12 && cc[1] == 13 && cc[2] == 14 && cc[3] == 15 &&
-//            dd[0] == 17 && dd[1] == 18 && dd[2] == 19 && dd[3] == 20
 
         companion object {
             val target = intArrayOf(2, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14, 15, 17, 18, 19, 20)
@@ -212,7 +213,6 @@ class Day23(val input: Input) : Puzzle {
     }
 
     private fun solve(initialState: State): Int {
-        val hallway = hallwayGraph()
         val burrow = newBurrow()
 
         data class Cost(val cost: Int, var remainingCostEstimate: Int, val state: State) {
@@ -228,6 +228,7 @@ class Day23(val input: Input) : Puzzle {
         var pathFindCount = 0
 
         fun heuristic(state: State): Int {
+            if (true) return 0
             return state.aa.sumOf { abs((it - 2) / 5) } * NodeType.A.energy +
                     state.bb.sumOf { abs((it - 7) / 5) } * NodeType.B.energy +
                     state.cc.sumOf { abs((it - 12) / 5) } * NodeType.C.energy +
@@ -246,104 +247,63 @@ class Day23(val input: Input) : Puzzle {
                 continue
             }
 
-            if (cur.cost % 100 == 0) {
-                println("${cur.cost} pathFind $pathFindCount, queueSize ${queue.size}")
-            }
+//            if (cur.cost % 100 == 0) {
+//                println("${cur.cost} pathFind $pathFindCount, queueSize ${queue.size}")
+//            }
 
-            data class Next(val newNodes: IntArray, val cost: Int, val lastMoved: Int?)
+            data class Next(val newNodes: IntArray, val cost: Int)
             fun tryMoves(nodeIds: IntArray, target: NodeType, state: State): Sequence<Next> {
                 return sequence {
                     nodeIds.forEachIndexed { index, nodeIdx ->
                         val node = nodes[nodeIdx]
-                        if (node.type == NodeType.Hall && state.lastMoved != nodeIdx) {
-                            // Locked, can only move directly into a room.
 
-                            // Try moving directly into type's room.
-                            val targetNodeIdx = firstRoomForType.getValue(target)
-                            if (targetNodeIdx in state.occupiedNodes) {
-                                // Can't move, room is occupied.
-                                return@forEachIndexed
-                            }
-
-                            // Check if room neighbour doesn't contain different type.
-                            val roomsToCheck = deeperRoomsForType.getValue(target)
-                            var toMoveTo = targetNodeIdx
-                            var isBlocked = false
-                            for (toCheck in roomsToCheck) {
-                                if (toCheck in state.occupiedNodes) {
-                                    if (toCheck !in nodeIds) {
-                                        return@forEachIndexed
-                                    } else {
-                                        isBlocked = true
-                                    }
-                                }
-                                if (!isBlocked) {
-                                    toMoveTo = toCheck
-                                }
-                            }
-//                            if (roomsToCheck.any { it in state.occupiedNodes && it !in nodeIds }) {
-//                                // Other type is already in this room. Can't move in.
-//                                return@forEachIndexed
-//                            }
-
-                            val cost = hallway.findShortestUnoccupiedPath(nodeIdx, targetNodeIdx, state.occupiedNodes)
-                                ?: return@forEachIndexed // No path found.
+                        suspend fun SequenceScope<Next>.tryMoveTo(targets: IntArray) {
+                            val costs = burrow.findShortestUnoccupiedPath(nodeIdx, targets, state.occupiedNodes)
+                                ?: return // No path found.
                             pathFindCount++
 
                             // Try moving into room.
-                            val totalCost = (cost + (toMoveTo - targetNodeIdx)) * target.energy
-                            val newList = nodeIds.copyOf()
-                            newList[index] = toMoveTo
-                            newList.sort()
-                            yield(Next(newList, totalCost, toMoveTo))
-                            return@forEachIndexed
+                            targets.forEachIndexed { targetIndex, targetNode ->
+                                val cost = costs[targetIndex]
+                                if (cost != -1) {
+                                    val totalCost = cost * target.energy
+                                    val newList = nodeIds.copyOf()
+                                    newList[index] = targetNode
+                                    newList.sort()
+                                    yield(Next(newList, totalCost))
+                                }
+                            }
                         }
 
-                        for (adjIdx in burrow.adjacentNodes(nodeIdx)) {
-                            if (adjIdx in state.occupiedNodes) continue
-                            val adj = nodes[adjIdx]
+                        when (node.type) {
+                            NodeType.Hall -> {
+                                // Try moving to own type's room, only if it doesn't contain other types.
+                                var deepestToMoveTo = firstRoomForType.getValue(target)
+                                val deeperRooms = deeperRoomsForType.getValue(target)
+                                if (deeperRooms.any { it in state.occupiedNodes && it !in nodeIds }) {
+                                    // Can't move in, there's another type in this room still.
+                                    return@forEachIndexed
+                                }
 
-                            if (adj.type != target && adj.type != node.type && adj.type != NodeType.Hall) {
-                                // Trying to move into another room type, and wasn't there already
-                                continue
+                                for (deeper in deeperRooms) {
+                                    if (deeper in state.occupiedNodes) {
+                                        break
+                                    }
+                                    deepestToMoveTo = deeper
+                                }
+
+                                tryMoveTo(IntArray(1) { deepestToMoveTo })
                             }
-
-                            if (adj.type != NodeType.Hall && adj.type != target && adjIdx > nodeIdx) {
-                                // Don't move further into other type.
-                                continue
-                            }
-
-                            if (node.type == target && adj.type != target) {
-                                // Check if we should consider moving out of target room. Only do if there are other types in this room that need to go out.
-                                val roomsToCheck = deeperRoomsForType.getValue(target)
-                                if (roomsToCheck.none { it in state.occupiedNodes && it !in nodeIds }) {
-                                    // Can't move out, all nodes in this room already of the right type.
-                                    continue
+                            target -> {
+                                // Only try to move out if it's blocking another type.
+                                if (deeperRoomsForType.getValue(target).any { it > nodeIdx && it in state.occupiedNodes && it !in nodeIds }) {
+                                    tryMoveTo(hallwayNodes)
                                 }
                             }
-
-                            if (node.type == target && adjIdx < node.id) {
-                                // Don't move towards door if already in correct room and no other nodes behind me.
-                                if (deeperRoomsForType.getValue(target).none { it > nodeIdx && it in state.occupiedNodes && it !in nodeIds }) {
-                                    continue
-                                }
+                            else -> {
+                                // In another room, try move to hallway.
+                                tryMoveTo(hallwayNodes)
                             }
-
-                            if (node.type == NodeType.Hall && adj.type == target) {
-                                // Check if room doesn't contain different type.
-                                val roomsToCheck = deeperRoomsForType.getValue(target)
-                                if (roomsToCheck.any { it in state.occupiedNodes && it !in nodeIds }) {
-                                    // Other type is already in this room. Can't move in.
-                                    continue
-                                }
-                            }
-
-                            val cost = burrow.edgeValue(nodeIdx, adjIdx).get() * target.energy
-                            // Move node to adj.
-                            val newList = nodeIds.copyOf()
-                            newList[index] = adjIdx
-                            newList.sort()
-                            yield(Next(newList, cost, adjIdx))
                         }
                     }
                 }
@@ -361,20 +321,20 @@ class Day23(val input: Input) : Puzzle {
                 queue += cost
             }
 
-            for ((newAA, cost, lastMoved) in tryMoves(state.aa, NodeType.A, state)) {
-                val newState = state.copy(aa = newAA, lastMoved = lastMoved)
+            for ((newAA, cost) in tryMoves(state.aa, NodeType.A, state)) {
+                val newState = state.copy(aa = newAA)
                 checkAddToQueue(Cost(cur.cost + cost, heuristic(newState), newState))
             }
-            for ((newBB, cost, lastMoved) in tryMoves(state.bb, NodeType.B, state)) {
-                val newState = state.copy(bb = newBB, lastMoved = lastMoved)
+            for ((newBB, cost) in tryMoves(state.bb, NodeType.B, state)) {
+                val newState = state.copy(bb = newBB)
                 checkAddToQueue(Cost(cur.cost + cost, heuristic(newState), newState))
             }
-            for ((newCC, cost, lastMoved) in tryMoves(state.cc, NodeType.C, state)) {
-                val newState = state.copy(cc = newCC, lastMoved = lastMoved)
+            for ((newCC, cost) in tryMoves(state.cc, NodeType.C, state)) {
+                val newState = state.copy(cc = newCC)
                 checkAddToQueue(Cost(cur.cost + cost, heuristic(newState), newState))
             }
-            for ((newDD, cost, lastMoved) in tryMoves(state.dd, NodeType.D, state)) {
-                val newState = state.copy(dd = newDD, lastMoved = lastMoved)
+            for ((newDD, cost) in tryMoves(state.dd, NodeType.D, state)) {
+                val newState = state.copy(dd = newDD)
                 checkAddToQueue(Cost(cur.cost + cost, heuristic(newState), newState))
             }
         }
@@ -401,22 +361,13 @@ val reusableQueue = PriorityQueue<Dist>(compareBy { it.dist })
 val reusableVisited = mutableSetOf<Int>()
 val reusableParents = Array<Dist?>(nodes.size) { null }
 
-fun ValueGraph<Int, Int>.findShortestUnoccupiedPath(from: Int, to: Int, occupied: IntArray): Int? {
+fun ValueGraph<Int, Int>.findShortestUnoccupiedPath(from: Int, to: IntArray, occupied: IntArray): IntArray {
     reusableQueue.clear()
     reusableVisited.clear()
     reusableParents.forEachIndexed { index, _ -> reusableParents[index] = null }
     reusableQueue += Dist(0, from, null)
 
-    fun path(d: Dist): Int {
-        var cost = 0
-        var cur = d
-        while (cur.parent != null) {
-            val par = cur.parent!!
-            cost += edgeValue(cur.node, par.node).get()
-            cur = par
-        }
-        return cost
-    }
+    val result = IntArray(to.size) { -1 }
 
     while (reusableQueue.isNotEmpty()) {
         val cur = reusableQueue.poll()
@@ -424,8 +375,10 @@ fun ValueGraph<Int, Int>.findShortestUnoccupiedPath(from: Int, to: Int, occupied
             continue
         }
 
-        if (cur.node == to) {
-            return cur.dist
+        val toIdx = to.indexOf(cur.node)
+        if (toIdx >= 0) {
+            result[toIdx] = cur.dist
+//            return cur.dist
 //            return path(cur)
         }
 
@@ -439,5 +392,5 @@ fun ValueGraph<Int, Int>.findShortestUnoccupiedPath(from: Int, to: Int, occupied
         }
     }
 
-    return null
+    return result
 }
