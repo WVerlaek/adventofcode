@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full:latest
+FROM gitpod/workspace-full:2022-11-15-17-00-18
 
 USER gitpod
-RUN sdk install kotlin
+RUN brew install kotlin
