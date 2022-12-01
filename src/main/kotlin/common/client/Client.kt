@@ -9,13 +9,16 @@ import java.nio.file.Files
 import kotlin.io.path.Path
 
 private const val sessionIdFile = ".secrets/session"
+private const val sessionIdEnv = "AOC_SESSION"
+
 private const val rightAnswer = "That's the right answer!"
 private const val alreadyCompleted = "You don't seem to be solving the right level."
 private const val wrongAnswerTooLow = "too low"
 private const val wrongAnswerTooHigh = "too high"
 
 private fun loadSessionId(): String {
-    return String(Files.readAllBytes(Path(sessionIdFile))).trim()
+    return System.getenv(sessionIdEnv)
+        ?: String(Files.readAllBytes(Path(sessionIdFile))).trim()
 }
 
 class Client(private val baseUrl: String = "https://adventofcode.com") {
