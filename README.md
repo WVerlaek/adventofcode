@@ -4,12 +4,10 @@
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/wverlaek/adventofcode)
 
-## Kotlin
-
-Solutions are written in Kotlin.
+Advent of Code solutions, written in Kotlin.
 
 
-## Puzzle framework
+## Solution framework
 
 A small framework is created to speed up solving a day's puzzle:
 
@@ -24,14 +22,23 @@ Additionally, uses IntelliJ [live templates](https://www.jetbrains.com/help/idea
 
 A GitHub Action is configured to run all unit tests on each commit.
 
+## Automatic answer submission
 
-### AoC API session token
+Using a session token for the Advent of Code API, the day's input is automatically read, and your solution is uploaded on each run with the outcome printed afterwards:
 
-A session token is needed to make API requests to AoC (for reading input and uploading answers).
+```console
+$ gradle run
+Answer for 2022/3 level 2: '2581' (took 28ms)
+Response: right answer!
+```
 
-To get this token:
+No need to manually download inputs and upload your answers :zap:
+
+#### Set up API session token
+
+The session token needed to read input and upload answers can be set up as follows:
 
 * Log in on https://adventofcode.com/
 * Read the `session` cookie
 * Put its value in this file: `.secrets/session` (.gitignored)
-  * Or set it as env var `AOC_SESSION`, e.g. in the Gitpod user settings.
+  * Or set it as env var `AOC_SESSION`, e.g. in the Gitpod user settings to have it automatically used in Gitpod workspaces.
