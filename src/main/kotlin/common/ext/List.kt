@@ -17,3 +17,9 @@ fun <T> List<T>.other(t: T): T {
     if (t == this[1]) return this[0]
     throw IllegalArgumentException("$t not found in list $this")
 }
+
+fun <T> MutableList<T>.removeLast(n: Int): List<T> {
+    val removed = subList(size - n, size).toList()
+    for (i in 0 until n) this.removeAt(size - 1)
+    return removed
+}
