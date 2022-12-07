@@ -15,6 +15,8 @@ private const val rightAnswer = "That's the right answer!"
 private const val alreadyCompleted = "You don't seem to be solving the right level."
 private const val wrongAnswerTooLow = "too low"
 private const val wrongAnswerTooHigh = "too high"
+private const val wrongAnswer = "That's not the right answer."
+private val rateLimitAnswer = "You have (.*) left to wait".toRegex()
 
 private fun loadSessionId(): String {
     return System.getenv(sessionIdEnv)
@@ -49,7 +51,7 @@ class Client(private val baseUrl: String = "https://adventofcode.com") {
         return input
     }
 
-    fun postAnswer(year: Int, day: Int, level: Int, answer: String) {
+    fun postAnswer(year: Int, day: Int, level: Int, answer: String): Boolean {
         val url = "$baseUrl/$year/day/$day/answer"
         val requestBody = FormBody.Builder()
             .add("level", level.toString())
@@ -63,15 +65,23 @@ class Client(private val baseUrl: String = "https://adventofcode.com") {
         val response = client.newCall(request).execute()
         val responseBody = response.body ?: throw RuntimeException("Failed to get input from $url, response code ${response.code}")
         val responseStr = responseBody.string()
-        val result = when {
-            rightAnswer in responseStr -> "right answer!"
-            alreadyCompleted in responseStr -> "not the right level, already completed?"
-            wrongAnswerTooLow in responseStr -> "wrong, answer is too low"
-            wrongAnswerTooHigh in responseStr -> "wrong, answer is too high"
-            else -> responseStr
+        val (result, isErr) = when {
+            rightAnswer in responseStr -> "right answer!" to false
+            alreadyCompleted in responseStr -> "not the right level, already completed?" to false
+            wrongAnswerTooLow in responseStr -> "wrong, answer is too low" to true
+            wrongAnswerTooHigh in responseStr -> "wrong, answer is too high" to true
+            wrongAnswer in responseStr -> "wrong answer" to true
+            rateLimitAnswer.containsMatchIn(responseStr) -> "rate limited, try again in ${rateLimitAnswer.find(responseStr)!!.groupValues[1]}" to true
+            else -> responseStr to true
         }
 
-        println("Response: $result")
+        val code = if (isErr) {
+            "\u001B[1;31m" // Bold;red
+        } else {
+            "\u001B[1;32m" // Bold;green
+        }
+        println("${code}Response: $result\u001B[0m")
         responseBody.close()
+        return !isErr
     }
 }

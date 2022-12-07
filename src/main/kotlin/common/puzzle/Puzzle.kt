@@ -1,6 +1,7 @@
 package common.puzzle
 
 import common.client.Client
+import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 
 interface Puzzle {
@@ -36,7 +37,10 @@ fun solvePuzzle(year: Int, day: Int, level: Int? = null, dryRun: Boolean = false
         val answer = answerAny.toString()
         println("Answer for $year/$day level $lvl: '$answer' (took ${millis}ms)")
         if (!dryRun) {
-            client.postAnswer(year, day, lvl, answer)
+            val success = client.postAnswer(year, day, lvl, answer)
+            if (!success) {
+                exitProcess(1)
+            }
         }
     }
 }
