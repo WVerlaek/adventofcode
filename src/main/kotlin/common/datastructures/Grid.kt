@@ -7,6 +7,9 @@ private val neighsY = listOf(0, -1, 0, 1)
 private val neighsXDiags = listOf(-1, -1, 0, 1, 1, 1, 0, -1)
 private val neighsYDiags = listOf(0, 1, 1, 1, 0, -1, -1, -1)
 
+data class Dir(val dRow: Int, val dCol: Int)
+fun directions(): List<Dir> = (0..3).map { i -> Dir(neighsY[i], neighsX[i]) }
+
 class Grid<T>(val rows: List<List<Cell<T>>>) {
     constructor(rows: Int, cols: Int, constructor: (row: Int, col: Int) -> T) : this(Array(rows) { row ->
         Array(cols) { col ->
@@ -40,6 +43,12 @@ class Grid<T>(val rows: List<List<Cell<T>>>) {
     }
 
     fun copy(): Grid<T> = Grid(rows.map { row -> row.map { cell -> cell.copy() } })
+
+    fun <V> map(operator: (Cell<T>) -> V): Grid<V> {
+        return Grid(numRows, numCols) { r, c ->
+            operator(this[r][c])
+        }
+    }
 
     class CellFormatter<T>(val cellFormat: (Cell<T>) -> CharSequence, val cellSeparator: String = ",")
     val boolFormatter = CellFormatter<T>({ cell -> if (cell.value as Boolean) "#" else "." }, "")
