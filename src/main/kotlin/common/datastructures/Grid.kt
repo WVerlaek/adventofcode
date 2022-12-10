@@ -8,7 +8,8 @@ private val neighsXDiags = listOf(-1, -1, 0, 1, 1, 1, 0, -1)
 private val neighsYDiags = listOf(0, 1, 1, 1, 0, -1, -1, -1)
 
 data class Dir(val dRow: Int, val dCol: Int)
-fun directions(): List<Dir> = (0..3).map { i -> Dir(neighsY[i], neighsX[i]) }
+fun Dir.toPoint() = Point(dRow, dCol)
+val directions: List<Dir> = (0..3).map { i -> Dir(neighsY[i], neighsX[i]) }
 
 class Grid<T>(val rows: List<List<Cell<T>>>) {
     constructor(rows: Int, cols: Int, constructor: (row: Int, col: Int) -> T) : this(Array(rows) { row ->

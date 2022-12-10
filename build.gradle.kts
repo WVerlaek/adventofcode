@@ -32,5 +32,5 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-    mainClass.set("y22/Day8Kt")
+    mainClass.set("y22/Day9Kt")
 }

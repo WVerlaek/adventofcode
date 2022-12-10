@@ -77,7 +77,7 @@ class Day8(val input: Input) : Puzzle {
         val grid = parseGrid(input.lines)
         return grid.cells().maxOf { (r, c, tree) ->
             var score = 1
-            directions().forEach { (dr, dc) ->
+            directions.forEach { (dr, dc) ->
                 var visibleTrees = 0
                 var curR = r
                 var curC = c
