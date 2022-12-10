@@ -13,40 +13,29 @@ import common.datastructures.toPoint
 import common.datastructures.toGrid
 import kotlin.math.sign
 
-fun main() = solvePuzzle(year = 2022, day = 10) { Day10(it) }
+fun main() = solvePuzzle(year = 2022, day = 10, dryRun = true) { Day10(it) }
 
 sealed class Instruction(val cycles: Int) {
     object Noop : Instruction(1)
     class Add(val x: Int) : Instruction(2)
 }
 
-class CPU(var x: Int = 1) {
-    private var cycle = 1
-    private var nextSignal = 20
-    private val signalMax = 220
-    private val signals = mutableListOf<Int>()
+class CPU(var x: Int = 1, val instructions: List<Instruction>) {
+    private var curInstr = 0
+    private var cyclesLeft = instructions[0].cycles
 
-    fun execute(i: Instruction) {
-        var newX = when (i) {
-            is Instruction.Noop -> x
-            is Instruction.Add -> x + i.x
+    fun cycle() {
+        if (cyclesLeft <= 0) {
+            instructions.getOrNull(curInstr)?.let { instr ->
+                if (instr is Instruction.Add) {
+                    x += instr.x
+                }
+            }
+            curInstr++
+            cyclesLeft = instructions.getOrNull(curInstr)?.cycles ?: 1
         }
 
-        if (cycle + i.cycles > nextSignal && nextSignal <= signalMax) {
-            signals += nextSignal * x
-            nextSignal += 40
-        }
-
-        cycle += i.cycles
-        x = newX
-    }
-
-    fun signalStrengths(): List<Int> {
-        while (nextSignal <= signalMax) {
-            signals += nextSignal * x
-            nextSignal += 40
-        }
-        return signals
+        cyclesLeft--
     }
 }
 
@@ -62,16 +51,34 @@ class Day10(val input: Input) : Puzzle {
     }
 
     override fun solveLevel1(): Any {
-        val cpu = CPU()
-        parseInstructions(input.lines).forEach { instruction ->
-            cpu.execute(instruction)
+        val cpu = CPU(instructions = parseInstructions(input.lines))
+
+        var nextSignal = 20
+        val signals = mutableListOf<Int>()
+        for (i in 0..220) {
+            if (i == nextSignal) {
+                signals += i * cpu.x
+                nextSignal += 40
+            }
+            cpu.cycle()
         }
 
-        return cpu.signalStrengths().sum()
+        return signals.sum()
 
     }
 
     override fun solveLevel2(): Any {
-        TODO()
+        val cpu = CPU(instructions = parseInstructions(input.lines))
+
+        val cols = 40
+        val rows = 6
+
+        val grid = Grid(rows, cols) { r, c ->
+            cpu.cycle()
+            val sprite = cpu.x
+            c in sprite-1..sprite+1
+        }
+
+        return grid.toString()
     }
 }
