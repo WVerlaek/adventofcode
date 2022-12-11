@@ -64,7 +64,6 @@ class Day10(val input: Input) : Puzzle {
         }
 
         return signals.sum()
-
     }
 
     override fun solveLevel2(): Any {
