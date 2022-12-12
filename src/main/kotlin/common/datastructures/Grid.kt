@@ -1,6 +1,7 @@
 package common.datastructures
 
 data class Cell<T>(val row: Int, val col: Int, var value: T)
+fun Cell<*>.toPoint() = Point(col, row)
 
 private val neighsX = listOf(-1, 0, 1, 0)
 private val neighsY = listOf(0, -1, 0, 1)
@@ -19,6 +20,7 @@ class Grid<T>(val rows: List<List<Cell<T>>>) {
     }.toList())
 
     operator fun get(row: Int) = rows[row]
+    operator fun get(p: Point) = rows[p.row][p.col]
 
     fun cells(): List<Cell<T>> = this.rows.flatten()
 
