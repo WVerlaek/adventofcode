@@ -7,6 +7,9 @@ import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import java.nio.file.Files
 import kotlin.io.path.Path
+import common.util.PrintColors
+import common.util.printError
+import common.util.printSuccess
 
 private const val sessionIdFile = ".secrets/session"
 private const val sessionIdEnv = "AOC_SESSION"
@@ -75,12 +78,11 @@ class Client(private val baseUrl: String = "https://adventofcode.com") {
             else -> responseStr to true
         }
 
-        val code = if (isErr) {
-            "\u001B[1;31m" // Bold;red
+        if (isErr) {
+            printError("Response: $result")
         } else {
-            "\u001B[1;32m" // Bold;green
+            printSuccess("Response: $result")
         }
-        println("${code}Response: $result\u001B[0m")
         responseBody.close()
         return !isErr
     }

@@ -2,7 +2,7 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - command: gradle build
+  - init: gradle build
 
 vscode:
   extensions:
