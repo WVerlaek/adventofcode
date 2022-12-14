@@ -14,4 +14,5 @@ data class Point(val col: Int, val row: Int) {
     }
 
     operator fun plus(other: Point) = Point(col + other.col, row + other.row)
+    operator fun minus(other: Point) = Point(col - other.col, row - other.row)
 }
