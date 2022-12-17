@@ -20,6 +20,11 @@ Additionally, uses IntelliJ [live templates](https://www.jetbrains.com/help/idea
   * Template to solve a day's puzzle
   * Template to unit test a solution with sample input
 
+Or, run the following to generate a source + test file for a new day:
+```console
+./workflow/new.sh <day> [<year>]
+```
+
 A GitHub Action is configured to run all unit tests on each commit.
 
 ## Automatic answer submission
