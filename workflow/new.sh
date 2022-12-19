@@ -39,3 +39,5 @@ fi
 echo "Generating source and test file for year $YEAR day $DAY..."
 envsubst < "$SRC_TEMPLATE" > "$SRC_FILE"
 envsubst < "$TEST_TEMPLATE" > "$TEST_FILE"
+
+open "$TEST_FILE" "$SRC_FILE"

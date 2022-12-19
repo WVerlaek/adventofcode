@@ -25,6 +25,12 @@ data class Point3(val x: Int, val y: Int, val z: Int) {
         Axis.Y -> y
         Axis.Z -> z
     }
+    fun add(axis: Axis, i: Int): Point3 {
+        return map { a, j ->
+            if (a == axis) j + i
+            else j
+        }
+    }
 
     inline fun map(transform: (Axis, Int) -> Int): Point3 {
         return Point3(
