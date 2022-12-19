@@ -31,6 +31,6 @@ internal class Day15Test {
 
     @Test
     fun solveLevel2() {
-        assertEquals(56000011, day.solveLevel2())
+        assertEquals(56000011L, day.solveLevel2())
     }
 }
