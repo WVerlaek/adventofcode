@@ -75,3 +75,10 @@ fun List<Point>.toGrid(): Grid<Boolean> {
         Point(col, row) in translated
     }
 }
+
+fun String.toGrid(): Grid<Boolean> {
+    val lines = trimIndent().lines()
+    require(lines.all { it.length == lines[0].length })
+    require(lines.all { line -> line.all { c -> c == '.' || c == '#' } })
+    return Grid(lines.size, lines[0].length) { r, c -> lines[r][c] == '#' }
+}

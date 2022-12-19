@@ -72,7 +72,7 @@ class Day10(val input: Input) : Puzzle {
         val cols = 40
         val rows = 6
 
-        val grid = Grid(rows, cols) { r, c ->
+        val grid = Grid(rows, cols) { _, c ->
             cpu.cycle()
             val sprite = cpu.x
             c in sprite-1..sprite+1
