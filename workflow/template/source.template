@@ -5,6 +5,7 @@ import common.puzzle.Input
 import common.puzzle.Puzzle
 import common.datastructures.*
 import common.ext.*
+import common.util.*
 import java.util.*
 import kotlin.math.*
 import kotlin.system.exitProcess
