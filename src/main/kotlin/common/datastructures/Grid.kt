@@ -9,7 +9,7 @@ private val neighsXDiags = listOf(-1, -1, 0, 1, 1, 1, 0, -1)
 private val neighsYDiags = listOf(0, 1, 1, 1, 0, -1, -1, -1)
 
 data class Dir(val dRow: Int, val dCol: Int)
-fun Dir.toPoint() = Point(dRow, dCol)
+fun Dir.toPoint() = Point(dCol, dRow)
 val directions: List<Dir> = (0..3).map { i -> Dir(neighsY[i], neighsX[i]) }
 
 class Grid<T>(val rows: List<List<Cell<T>>>) {
@@ -64,7 +64,7 @@ class Grid<T>(val rows: List<List<Cell<T>>>) {
     }
 }
 
-fun List<Point>.toGrid(): Grid<Boolean> {
+fun List<Point>.fitGrid(): Grid<Boolean> {
     val minRow = minOf(minOf { it.row }, 0)
     val minCol = minOf(minOf { it.col }, 0)
     val translated = map { it.copy(col = it.col - minCol, row = it.row - minRow) }
@@ -77,8 +77,31 @@ fun List<Point>.toGrid(): Grid<Boolean> {
 }
 
 fun String.toGrid(): Grid<Boolean> {
-    val lines = trimIndent().lines()
-    require(lines.all { it.length == lines[0].length })
-    require(lines.all { line -> line.all { c -> c == '.' || c == '#' } })
-    return Grid(lines.size, lines[0].length) { r, c -> lines[r][c] == '#' }
+    return trimIndent().lines().toGrid()
+}
+
+fun List<String>.toGrid(): Grid<Boolean> {
+    require(all { it.length == this[0].length })
+    require(all { line -> line.all { c -> c == '.' || c == '#' } })
+    return Grid(size, this[0].length) { r, c -> this[r][c] == '#' }
+}
+
+fun <T> Grid<T>.expand(padding: Int, value: T): Grid<T> {
+    return Grid(numRows + 2 * padding, numCols + 2 * padding) { r, c ->
+        if (r < padding || c < padding || r >= numRows + padding || c >= numCols + padding) {
+            value
+        } else {
+            this[r - padding][c - padding].value
+        }
+    }
+}
+
+fun Grid<Boolean>.trim(): Grid<Boolean> {
+    val fromX = rows.minOf { row -> row.indexOfFirst { cell -> cell.value }.let { if (it == -1) Int.MAX_VALUE else it } }
+    val toX = rows.maxOf { row -> row.indexOfLast { cell -> cell.value }.let { if (it == numCols) Int.MIN_VALUE else it } }
+    val fromY = (0 until numCols).minOf { col -> (0 until numRows).indexOfFirst { row -> this[row][col].value }.let { if (it == -1) Int.MAX_VALUE else it } }
+    val toY = (0 until numCols).maxOf { col -> (0 until numRows).indexOfLast { row -> this[row][col].value }.let { if (it == numRows) Int.MAX_VALUE else it } }
+    return Grid(toY - fromY + 1, toX - fromX + 1) { r, c ->
+        this[r + fromY][c + fromX].value
+    }
 }

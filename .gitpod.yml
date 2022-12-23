@@ -3,6 +3,9 @@ image:
 
 tasks:
   - init: gradle build
+    command: |
+      echo "Run tests using e.g. 'gradle test --tests y22.Day23Test --info'"
+      echo "To submit: 'gradle run'"
 
 vscode:
   extensions:

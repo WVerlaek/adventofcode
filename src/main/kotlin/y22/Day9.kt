@@ -8,9 +8,9 @@ import common.ext.removeLast
 import common.datastructures.Dir
 import common.datastructures.Grid
 import common.datastructures.directions
+import common.datastructures.fitGrid
 import common.datastructures.Point
 import common.datastructures.toPoint
-import common.datastructures.toGrid
 import kotlin.math.sign
 
 fun main() = solvePuzzle(year = 2022, day = 9) { Day9(it) }
@@ -47,7 +47,7 @@ data class Rope(
     }
 
     override fun toString(): String {
-        val grid = knots.toGrid()
+        val grid = knots.fitGrid()
         return grid.toString()
     }
 }

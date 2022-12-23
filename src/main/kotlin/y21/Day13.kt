@@ -1,7 +1,7 @@
 package y21
 
+import common.datastructures.fitGrid
 import common.datastructures.Point
-import common.datastructures.toGrid
 import common.puzzle.Input
 import common.puzzle.Puzzle
 import common.puzzle.solvePuzzle
@@ -47,7 +47,7 @@ class Day13(val input: Input) : Puzzle {
     override fun solveLevel2(): Any {
         var points = this.points
         folds.forEach { points = points.fold(it) }
-        println(points.toGrid())
+        println(points.fitGrid())
         return "EFJKZLBL"
     }
 }
