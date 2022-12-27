@@ -15,7 +15,7 @@ fun main() = solvePuzzle(year = 2022, day = 25) { Day25(it) }
 
 typealias Snafu = String
 
-fun Snafu.toLong(): Long {
+fun Snafu.snafuToLong(): Long {
     var total = 0L
     forEachIndexed { i, c ->
         val offset = length - i - 1
