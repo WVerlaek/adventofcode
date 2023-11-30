@@ -13,7 +13,7 @@ internal class Day1Test {
 
     @Test
     fun solveLevel1() {
-        assertEquals(, day.solveLevel1())
+        // assertEquals(, day.solveLevel1())
     }
 
     @Test

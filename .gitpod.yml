@@ -2,7 +2,7 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: gradle build
+  - init: gradle build && gradle test
     command: |
       echo "Run tests using e.g. 'gradle test --tests y22.Day23Test --info'"
       echo "To submit: 'gradle run'"
