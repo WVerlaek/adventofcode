@@ -8,7 +8,7 @@ import kotlin.system.exitProcess
 // - `--args="1"` to run current year, day 1.
 // - `--args="21.1" to run year 2021, day 1.
 fun main(args: Array<String>) {
-    var year = 22
+    var year = 23
     var day: Int? = null
 
     if (args.size > 0) {

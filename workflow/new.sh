@@ -4,7 +4,7 @@
 
 set -Eeuo pipefail
 
-CURRENT_YEAR="22"
+CURRENT_YEAR="23"
 
 export DAY="${1:?"Usage: ./new.sh <day> [<year>]"}"
 export YEAR="${2:-"$CURRENT_YEAR"}"
@@ -21,8 +21,12 @@ if ! [[ "$YEAR" =~ $YEAR_REGEX ]]; then
 fi
 
 ROOT_DIR="$(dirname -- "$0")/.."
-SRC_FILE="${ROOT_DIR}/src/main/kotlin/y${YEAR}/Day${DAY}.kt"
-TEST_FILE="${ROOT_DIR}/src/test/kotlin/y${YEAR}/Day${DAY}Test.kt"
+SRC_DIR="${ROOT_DIR}/src/main/kotlin/y${YEAR}"
+mkdir -p "$SRC_DIR"
+SRC_FILE="${SRC_DIR}/Day${DAY}.kt"
+TEST_DIR="${ROOT_DIR}/src/test/kotlin/y${YEAR}"
+mkdir -p "$TEST_DIR"
+TEST_FILE="${TEST_DIR}/Day${DAY}Test.kt"
 
 SRC_TEMPLATE="${ROOT_DIR}/workflow/template/source.template"
 TEST_TEMPLATE="${ROOT_DIR}/workflow/template/test.template"
