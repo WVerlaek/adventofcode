@@ -22,6 +22,19 @@ class Day2(val input: Input) : Puzzle {
         fun isPossible(cubes: Map<String, Int>): Boolean {
             return sets.all { it.isPossible(cubes) }
         }
+
+        fun minCubes(): CubeSet {
+            val minSet = mutableMapOf<String, Int>()
+            sets.forEach { set ->
+                set.cubes.forEach { (cube, n) ->
+                    minSet[cube] = minSet[cube]
+                        ?.let { m -> maxOf(m, n) }
+                        ?: n
+                }
+            }
+
+            return CubeSet(minSet)
+        }
     }
 
     data class CubeSet(
@@ -32,6 +45,8 @@ class Day2(val input: Input) : Puzzle {
                 (cubes[col] ?: 0) >= count
             }
         }
+
+        fun power() = cubes.values.fold(1) { a, b -> a * b }
     }
 
     private fun parseGame(line: String): Game {
@@ -64,6 +79,8 @@ class Day2(val input: Input) : Puzzle {
     }
 
     override fun solveLevel2(): Any {
-        TODO()
+        val games = input.lines.map(::parseGame)
+        return games.map { game -> game.minCubes() }
+            .sumOf { set -> set.power() }
     }
 }

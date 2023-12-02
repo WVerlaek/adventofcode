@@ -22,6 +22,6 @@ internal class Day2Test {
 
     @Test
     fun solveLevel2() {
-        // assertEquals(, day.solveLevel2())
+         assertEquals(2286, day.solveLevel2())
     }
 }
