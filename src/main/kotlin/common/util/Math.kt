@@ -12,6 +12,31 @@ fun gcd(a: Long, b: Long): Long = when {
     else -> gcd(b, a % b)
 }
 
+data class ExtendedGcd(val gcd: Long, val x: Long, val y: Long)
+fun extendedGcd(a: Long, b: Long): ExtendedGcd {
+    var oldR = a
+    var r = b
+    var oldS = 1L
+    var s = 0L
+    var oldT = 0L
+    var t = 1L
+
+    while (r != 0L) {
+        val quotient = oldR / r
+        val newR = oldR - quotient * r
+        oldR = r
+        r = newR
+        val newS = oldS - quotient * s
+        oldS = s
+        s = newS
+        val newT = oldT - quotient * t
+        oldT = t
+        t = newT
+    }
+
+    return ExtendedGcd(oldR, oldS, oldT)
+}
+
 fun lcm(a: Int, b: Int): Int = (a * b) / gcd(a, b)
 fun lcm(a: Long, b: Long): Long = (a * b) / gcd(a, b)
 
