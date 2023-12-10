@@ -21,9 +21,9 @@ class Day9(val input: Input) : Puzzle {
         val isZero = list.all { it == 0 }
 
         val diff: Sequence? = if (isZero) null else {
-            List(list.size - 1) { index ->
-                list[index + 1] - list[index]
-            }.let { Sequence(ArrayDeque(it)) }
+            list.windowed(2)
+                .map { (i1, i2) -> i2 - i1 }
+                .let { Sequence(ArrayDeque(it)) }
         }
 
         fun generateNext(): Int {

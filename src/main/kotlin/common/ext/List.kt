@@ -7,7 +7,7 @@ fun <T> MutableList<T>.swap(i: Int, j: Int) {
 }
 
 fun <T> List<T>.requireSingleElement(): T {
-    require(size == 1)
+    require(size == 1) { "Was: $this" }
     return first()
 }
 
