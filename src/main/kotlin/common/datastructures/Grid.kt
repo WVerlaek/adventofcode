@@ -62,6 +62,37 @@ class Grid<T>(val rows: List<List<Cell<T>>>) {
     override fun toString(): String {
         return rows.joinToString("\n") { it.joinToString(cellFormatter.cellSeparator, transform = cellFormatter.cellFormat) }
     }
+
+    override fun equals(other: Any?): Boolean {
+        when (other) {
+            is Grid<*> -> {
+                if (numRows != other.numRows || numCols != other.numCols) {
+                    return false
+                }
+
+                for (row in 0 until numRows) {
+                    for (col in 0 until numCols) {
+                        if (this[row][col].value != other[row][col].value) {
+                            return false
+                        }
+                    }
+                }
+
+                return true
+            }
+            else -> return false
+        }
+    }
+
+    override fun hashCode(): Int {
+        var hashCode = 1
+        for (row in 0 until numRows) {
+            for (col in 0 until numCols) {
+                hashCode = 31 * hashCode + this[row][col].value.hashCode()
+            }
+        }
+        return hashCode
+    }
 }
 
 fun List<Point>.fitGrid(): Grid<Boolean> {

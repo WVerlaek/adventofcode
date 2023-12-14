@@ -45,4 +45,5 @@ envsubst < "$SRC_TEMPLATE" > "$SRC_FILE"
 envsubst < "$TEST_TEMPLATE" > "$TEST_FILE"
 
 echo "Opening files"
-gp open "$TEST_FILE" "$SRC_FILE"
+gp open "$SRC_FILE"
+gp open "$TEST_FILE"
