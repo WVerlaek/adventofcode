@@ -17,13 +17,7 @@ class Day15(val input: Input) : Puzzle {
 
     data class Lens(val label: String, val focalLen: Int)
 
-    private fun hash(s: String): Int {
-        var h = 0
-        s.forEach { c ->
-            h = ((h + c.code) * 17) % 256
-        }
-        return h
-    }
+    private fun hash(s: String) = s.fold(0) { acc, c -> ((acc + c.code) * 17) % 256 }
 
     override fun solveLevel1(): Any {
         return input.lines
