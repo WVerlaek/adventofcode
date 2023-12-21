@@ -39,6 +39,7 @@ fun extendedGcd(a: Long, b: Long): ExtendedGcd {
 
 fun lcm(a: Int, b: Int): Int = (a * b) / gcd(a, b)
 fun lcm(a: Long, b: Long): Long = (a * b) / gcd(a, b)
+fun lcm(vararg values: Long): Long = values.reduce { acc, l -> lcm(acc, l) }
 
 fun List<Int>.lcm() = reduce { acc, x: Int -> lcm(acc, x) }
 fun List<Long>.lcm() = reduce { acc, x: Long -> lcm(acc, x) }
