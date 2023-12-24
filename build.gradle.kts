@@ -8,6 +8,8 @@ plugins {
 group = "me.wverl"
 version = "1.0-SNAPSHOT"
 
+val dyldLibraryPath = "libs/z3"
+
 repositories {
     mavenCentral()
 }
@@ -18,6 +20,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
     implementation("com.google.guava:guava:31.0.1-jre")
+    implementation(files("libs/com.microsoft.z3.jar"))
 }
 
 tasks.test {
@@ -25,6 +28,7 @@ tasks.test {
     testLogging {
         events("passed", "skipped", "failed")
     }
+    environment("DYLD_LIBRARY_PATH", dyldLibraryPath)
 }
 
 tasks.withType<KotlinCompile> {
