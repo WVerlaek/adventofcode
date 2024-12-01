@@ -6,7 +6,7 @@ import com.google.common.graph.ValueGraph
 import java.util.*
 
 object Dinics {
-    fun <T> maxFlow(graph: ValueGraph<T, Int>, src: T, sink: T): Int {
+    fun <T> maxFlow(graph: ValueGraph<T & Any, Int>, src: T, sink: T): Int {
         return maxFlowGraph(graph, src, sink).first
     }
 
@@ -15,11 +15,11 @@ object Dinics {
         val cut: List<Pair<T, T>>,
     )
 
-    fun <T> minCut(graph: ValueGraph<T, Int>, src: T, sink: T): MinCut<T> {
+    fun <T> minCut(graph: ValueGraph<T & Any, Int>, src: T, sink: T): MinCut<T> {
         val (_, nodes) = maxFlowGraph(graph, src, sink)
 
         val reachable = mutableSetOf<T>()
-        val queue = LinkedList<Node<T>>().also { it.add(nodes[src]!!) }
+        val queue = LinkedList<Node<T & Any>>().also { it.add(nodes[src]!!) }
         while (queue.isNotEmpty()) {
             val cur = queue.removeFirst()
             if (cur.node in reachable) {
@@ -47,7 +47,7 @@ object Dinics {
         return MinCut(reachable, cut)
     }
 
-    private fun <T> maxFlowGraph(graph: ValueGraph<T, Int>, src: T, sink: T): Pair<Int, Map<T, Node<T>>> {
+    private fun <T> maxFlowGraph(graph: ValueGraph<T & Any, Int>, src: T, sink: T): Pair<Int, Map<T & Any, Node<T & Any>>> {
         val nodes = graph.toFlowGraph()
         val srcNode = nodes[src]!!
         val sinkNode = nodes[sink]!!

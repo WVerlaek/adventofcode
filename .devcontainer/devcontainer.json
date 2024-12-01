@@ -1,0 +1,8 @@
+{
+  "name": "Kotlin Development",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "gradle --version && kotlin -version",
+  "remoteUser": "vscode"
+}
