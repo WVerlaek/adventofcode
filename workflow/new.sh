@@ -4,7 +4,7 @@
 
 set -Eeuo pipefail
 
-CURRENT_YEAR="23"
+CURRENT_YEAR="24"
 
 export DAY="${1:?"Usage: ./new.sh <day> [<year>]"}"
 export YEAR="${2:-"$CURRENT_YEAR"}"
@@ -45,5 +45,5 @@ envsubst < "$SRC_TEMPLATE" > "$SRC_FILE"
 envsubst < "$TEST_TEMPLATE" > "$TEST_FILE"
 
 echo "Opening files"
-gp open "$SRC_FILE"
-gp open "$TEST_FILE"
+gp open "$SRC_FILE" || echo "Failed to open $SRC_FILE"
+gp open "$TEST_FILE" || echo "Failed to open $TEST_FILE"
