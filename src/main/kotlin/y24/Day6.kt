@@ -36,25 +36,36 @@ class Day6(val input: Input) : Puzzle {
     data class PathResult(
         val points: Set<Point>,
         val loop: Boolean,
+        val jumpTable: Map<Pair<Point, Dir>, Point>,
     )
 
-    private fun findPath(grid: Grid<Boolean>, start: Point): PathResult {
+    private fun findPath(grid: Grid<Boolean>, start: Point, jumpTable: Map<Pair<Point, Dir>, Point>? = null): PathResult {
         var cur = start
         val visited = mutableSetOf<Point>()
         val visitedWithDir = mutableSetOf<Pair<Point, Dir>>()
 
+        val computeNewJumpTable = jumpTable == null
+        val newJumpTable = mutableMapOf<Pair<Point, Dir>, Point>()
+
+        var jumpStart: Point? = null
         var dir = 1
         while (grid.withinBounds(cur.row, cur.col)) {
             visited += cur
             if (!visitedWithDir.add(cur to directions[dir])) {
-                return PathResult(visited, true)
+                return PathResult(visited, true, newJumpTable)
+            }
+
+            if (computeNewJumpTable) {
+                if (jumpStart == null) {
+                    jumpStart = cur
+                }
             }
 
             // Assumes no bad input that could lead to an infinite loop
             while (true) {
                 val d = directions[dir]
 
-                val next = cur + d.toPoint()
+                val next = jumpTable?.let { it[cur to d] } ?: (cur + d.toPoint())
                 if (!grid.withinBounds(next.row, next.col)) {
                     cur = next
                     break
@@ -62,6 +73,13 @@ class Day6(val input: Input) : Puzzle {
 
                 if (grid[next.row][next.col].value) {
                     // Obstacle, rotate
+                    if (computeNewJumpTable) {
+                        if (jumpStart != null && jumpStart != cur) {
+                            newJumpTable[jumpStart to d] = cur
+                        }
+                        jumpStart = null
+                    }
+
                     dir = (dir + 1) % 4
                     continue
                 }
@@ -71,7 +89,7 @@ class Day6(val input: Input) : Puzzle {
             }
         }
 
-        return PathResult(visited, false)
+        return PathResult(visited, false, newJumpTable)
     }
 
     override fun solveLevel1(): Any {
@@ -98,7 +116,10 @@ class Day6(val input: Input) : Puzzle {
                 }
 
                 grid[row][col].value = true
-                val path = findPath(grid, guard)
+                val withJumpTable = normalPath.jumpTable.filterKeys { (start, _) ->
+                    start.row != p.row && start.col != p.col
+                }
+                val path = findPath(grid, guard, withJumpTable)
                 if (path.loop) {
                     numLoops++
                 }
