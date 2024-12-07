@@ -7,4 +7,5 @@ class Input(val string: String) {
 }
 
 fun String.splitToInts(separator: String = ",") = split(separator).map { it.toInt() }
+fun String.splitToLongs(separator: String = ",") = split(separator).map { it.toLong() }
 fun List<String>.toInts() = map { it.toInt() }
