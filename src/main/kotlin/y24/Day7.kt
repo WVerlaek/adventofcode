@@ -8,40 +8,31 @@ import java.util.*
 import kotlin.math.*
 import kotlin.system.exitProcess
 
-fun main() = solvePuzzle(year = 2024, day = 7, dryRun = false) { Day7(it) }
+fun main() = solvePuzzle(year = 2024, day = 7, dryRun = true) { Day7(it) }
 
 class Day7(val input: Input) : Puzzle {
 
-    enum class Operator(val s: String, val op: (a: Long, b: Long) -> Long) {
-        Add("+", { a, b -> a + b }),
-        Multiply("*", { a, b -> a * b }),
-        Concatenate("||", {a, b -> "$a$b".toLong() }),
+    enum class Operator(val op: (a: Long, b: Long) -> Long) {
+        Add({ a, b -> a + b }),
+        Multiply({ a, b -> a * b }),
+        Concatenate({a, b -> "$a$b".toLong() }),
     }
     data class Equation(val testValue: Long, val numbers: List<Long>)
-    data class Solution(val operators: List<Operator>)
 
-    fun findSolutions(eq: Equation, availableOperators: List<Operator>, i: Int = 1, curTestValue: Long = eq.numbers[0], operators: MutableList<Operator> = mutableListOf()): List<Solution> {
+    fun hasSolutions(eq: Equation, availableOperators: List<Operator>, i: Int = 1, curTestValue: Long = eq.numbers[0]): Boolean {
         if (curTestValue > eq.testValue) {
             // No negative numbers, cannot reach testValue anymore.
-            return emptyList()
+            return false
         }
 
         if (i == eq.numbers.size) {
-            if (curTestValue == eq.testValue) {
-                return listOf(Solution(operators.toList()))
-            }
-
-            return emptyList()
+            return curTestValue == eq.testValue
         }
 
         val num = eq.numbers[i]
-        return availableOperators.flatMap { op ->
+        return availableOperators.any { op ->
             val newTestValue = op.op(curTestValue, num)
-
-            operators.add(op)
-            val solutions = findSolutions(eq, availableOperators, i + 1, newTestValue, operators)
-            operators.removeLast()
-            solutions
+            hasSolutions(eq, availableOperators, i + 1, newTestValue)
         }
     }
 
@@ -56,7 +47,7 @@ class Day7(val input: Input) : Puzzle {
         val equations = parseInput(input.lines)
 
         return equations.filter { eq ->
-            findSolutions(eq, listOf(Operator.Add, Operator.Multiply)).isNotEmpty()
+            hasSolutions(eq, listOf(Operator.Add, Operator.Multiply))
         }.sumOf { it.testValue }
     }
 
@@ -64,7 +55,7 @@ class Day7(val input: Input) : Puzzle {
         val equations = parseInput(input.lines)
 
         return equations.filter { eq ->
-            findSolutions(eq, listOf(Operator.Add, Operator.Multiply, Operator.Concatenate)).isNotEmpty()
+            hasSolutions(eq, listOf(Operator.Add, Operator.Multiply, Operator.Concatenate))
         }.sumOf { it.testValue }
     }
 }
