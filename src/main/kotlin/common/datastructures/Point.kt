@@ -17,6 +17,11 @@ data class Point(val col: Int, val row: Int) {
 
     operator fun plus(other: Point) = Point(col + other.col, row + other.row)
     operator fun minus(other: Point) = Point(col - other.col, row - other.row)
+    operator fun times(n: Int) = Point(col * n, row * n)
 
     fun manhattanDistTo(other: Point) = abs(x - other.x) + abs(y - other.y)
+
+    fun inBounds(numRows: Int, numCols: Int): Boolean {
+        return x in 0..<numCols && y in 0..<numRows
+    }
 }
