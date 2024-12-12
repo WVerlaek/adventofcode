@@ -19,6 +19,11 @@ class Grid<T>(val rows: List<List<Cell<T>>>) {
             Cell<T>(row, col, constructor(row, col))
         }.toList()
     }.toList())
+    constructor(input: List<String>, constr: (row: Int, col: Int, c: Char) -> T) : this(Array(input.size) { row ->
+        Array(input[0].length) { col ->
+            Cell<T>(row, col, constr(row, col, input[row][col]))
+        }.toList()
+    }.toList())
 
     operator fun get(row: Int) = rows[row]
     operator fun get(p: Point) = rows[p.row][p.col]
