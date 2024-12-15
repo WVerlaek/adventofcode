@@ -18,14 +18,12 @@ class Day14(val input: Input, val rows: Int = 103, val cols: Int = 101) : Puzzle
     data class Robot(val p: Point, val v: Point)
 
     private fun Robot.move(n: Int): Robot {
-        var x = p.x + v.x * n
-        while (x < 0) x += cols
-        var y = p.y + v.y * n
-        while (y < 0) y += rows
+        val x = Math.floorMod(p.x + v.x * n, cols)
+        val y = Math.floorMod(p.y + v.y * n, rows)
 
         return Robot(Point(
-            col = x % cols,
-            row = y % rows,
+            col = x,
+            row = y,
         ), v)
     }
 
