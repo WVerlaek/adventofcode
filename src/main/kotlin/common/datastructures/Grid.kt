@@ -10,6 +10,7 @@ private val neighsYDiags = listOf(0, 1, 1, 1, 0, -1, -1, -1)
 
 data class Dir(val dRow: Int, val dCol: Int)
 fun Dir.toPoint() = Point(dCol, dRow)
+fun Point.toDir() = Dir(row, col)
 val directions: List<Dir> = (0..3).map { i -> Dir(neighsY[i], neighsX[i]) }
 val directionsWithDiagonals: List<Dir> = neighsYDiags.zip(neighsXDiags) { y, x -> Dir(y, x) }
 
