@@ -14,6 +14,14 @@ fun Point.toDir() = Dir(row, col)
 val directions: List<Dir> = (0..3).map { i -> Dir(neighsY[i], neighsX[i]) }
 val directionsWithDiagonals: List<Dir> = neighsYDiags.zip(neighsXDiags) { y, x -> Dir(y, x) }
 
+fun Dir.toChar() = when (this) {
+    Dir(-1, 0) -> '^'
+    Dir(0, 1) -> '>'
+    Dir(1, 0) -> 'v'
+    Dir(0, -1) -> '<'
+    else -> error("invalid dir")
+}
+
 class Grid<T>(val rows: List<List<Cell<T>>>) {
     constructor(rows: Int, cols: Int, constructor: (row: Int, col: Int) -> T) : this(Array(rows) { row ->
         Array(cols) { col ->
@@ -25,6 +33,15 @@ class Grid<T>(val rows: List<List<Cell<T>>>) {
             Cell<T>(row, col, constr(row, col, input[row][col]))
         }.toList()
     }.toList())
+    companion object {
+        fun <T> fromValues(rows: List<List<T>>): Grid<T> {
+            return Grid(rows.mapIndexed { rowId, row ->
+                row.mapIndexed { col, value ->
+                    Cell(rowId, col, value)
+                }
+            })
+        }
+    }
 
     operator fun get(row: Int) = rows[row]
     operator fun get(p: Point) = rows[p.row][p.col]
