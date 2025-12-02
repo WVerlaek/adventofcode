@@ -4,7 +4,7 @@
 
 set -Eeuo pipefail
 
-CURRENT_YEAR="24"
+CURRENT_YEAR="25"
 
 export DAY="${1:?"Usage: ./new.sh <day> [<year>]"}"
 export YEAR="${2:-"$CURRENT_YEAR"}"
