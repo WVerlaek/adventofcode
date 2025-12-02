@@ -1,0 +1,8 @@
+tasks:
+  build-and-test:
+    name: Build and test
+    command: gradle build && gradle test
+    triggeredBy:
+      - prebuild
+      - manual
+      - postEnvironmentStart
