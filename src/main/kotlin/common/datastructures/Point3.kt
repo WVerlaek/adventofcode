@@ -92,6 +92,12 @@ data class Point3(val x: Int, val y: Int, val z: Int) {
     }
 
     fun manhattanDistTo(other: Point3) = abs(x - other.x) + abs(y - other.y) + abs(z - other.z)
+    fun distSquaredTo(other: Point3): Long {
+        val dx = (x - other.x).toLong()
+        val dy = (y - other.y).toLong()
+        val dz = (z - other.z).toLong()
+        return dx * dx + dy * dy + dz * dz
+    }
 
     override fun toString(): String {
         return "{$x,$y,$z}"
