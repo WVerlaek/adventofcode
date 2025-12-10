@@ -9,6 +9,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     git \
     unzip \
     gettext \
+    libz3-jni \
+    libz3-java \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

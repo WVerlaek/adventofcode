@@ -6,3 +6,4 @@ tasks:
       - prebuild
       - manual
       - postEnvironmentStart
+      - postDevcontainerStart

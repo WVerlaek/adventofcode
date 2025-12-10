@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Day10" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="y25.Day10Kt" />
+    <module name="adventofcode.main" />
+    <option name="VM_PARAMETERS" value="-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni:libs/z3" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

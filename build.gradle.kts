@@ -30,6 +30,9 @@ tasks.test {
         events("passed", "skipped", "failed")
     }
     environment("DYLD_LIBRARY_PATH", dyldLibraryPath)
+    // Linux: use system-installed z3 JNI library
+    environment("LD_LIBRARY_PATH", "/usr/lib/x86_64-linux-gnu/jni")
+    systemProperty("java.library.path", "/usr/lib/x86_64-linux-gnu/jni:$dyldLibraryPath")
 }
 
 tasks.withType<KotlinCompile> {
@@ -40,4 +43,5 @@ tasks.withType<KotlinCompile> {
 
 application {
     mainClass.set("MainKt")
+    applicationDefaultJvmArgs = listOf("-Djava.library.path=/usr/lib/x86_64-linux-gnu/jni:$dyldLibraryPath")
 }
