@@ -160,3 +160,15 @@ fun Grid<Boolean>.trim(): Grid<Boolean> {
         this[r + fromY][c + fromX].value
     }
 }
+
+fun <T> Grid<T>.rotate90(): Grid<T> {
+    return Grid(numCols, numRows) { r, c ->
+        this[numRows - c - 1][r].value
+    }
+}
+
+fun <T> Grid<T>.flipHorizontal(): Grid<T> {
+    return Grid(numRows, numCols) { r, c ->
+        this[r][numCols - c - 1].value
+    }
+}
